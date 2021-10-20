@@ -45,17 +45,14 @@ class Compiler {
       fwrite($manifest, json_encode($this->Manifest, JSON_PRETTY_PRINT));
       fclose($manifest);
       if(isset($this->Connection,$this->Database,$this->Manifest['table']) && !empty($this->Manifest['table']) && !empty($this->Settings)){
-        $structure = $this->createStructure(dirname(__FILE__).'/dist/data/structure.json');
+        $structure = $this->createStructure(dirname(__FILE__).'/dist/data/structure.json',$this->Manifest['table']);
         if(!isset($structure['error'])){
-          echo "\n";
           echo "The database structure file was created\n";
           $records = $this->createRecords(dirname(__FILE__).'/dist/data/skeleton.json',["tables" => $this->Manifest['table'], "maxID" => 99999]);
           if(!isset($records['error'])){
-            echo "\n";
             echo "The database skeleton file was created\n";
             $records = $this->createRecords(dirname(__FILE__).'/dist/data/sample.json',["tables" => $this->Manifest['table']]);
             if(!isset($records['error'])){
-              echo "\n";
               echo "The database sample file was created\n";
             } else {
               echo "\n";
@@ -70,7 +67,8 @@ class Compiler {
           echo $structure['error']."\n";
         }
       }
-      shell_exec("git add . && git commit -m '".$this->Manifest['version'].'-'.$this->Manifest['build']."' && git push origin ".$this->Manifest['repository']['branch']);
+      shell_exec("git add . && git commit -m '".$this->Manifest['version'].'-'.$this->Manifest['build']."' && git push origin ".$this->Manifest['repository']['branch']." 2>&1 > /dev/null");
+      echo "Repository updated\n";
       echo "\n";
       echo "Version: ".$this->Manifest['version']."\n";
       echo "Build: ".$this->Manifest['build']."\n";
@@ -177,7 +175,7 @@ class Compiler {
 		return $result;
 	}
 
-	private function error($error) { return json_encode($error, JSON_PRETTY_PRINT); }
+	private function error($error) { echo $error; }
 
 	private function close() {
 		return $this->Connection->close();
@@ -277,29 +275,27 @@ class Compiler {
 	}
 
 	private function createRecords($file, $options = []){
-		if($this->Status){
-			$SQLoptions = '';
-			$SQLargs = [];
-			if(!isset($options['tables'])){ $tables = $this->getTables($this->Database); } else { $tables = $options['tables']; }
-			if((isset($options['maxID']))||(isset($options['minID']))){
-				if($SQLoptions == ''){ $SQLoptions .= ' WHERE'; }
-				if(isset($options['maxID'])){ $SQLoptions .= ' id <= ?'; array_push($SQLargs,$options['maxID']); }
-				if(isset($options['minID'])){ $SQLoptions .= ' id >= ?'; array_push($SQLargs,$options['minID']); }
-			}
-			foreach($tables as $table){
-				if(!empty($SQLargs)){ $results = $this->Query('SELECT * FROM `'.$table.'`'.$SQLoptions,$SQLargs); }
-				else { $results = $this->Query('SELECT * FROM `'.$table.'`'); }
-				if($results != null){ $records[$table] = $results->fetchAll(); }
-			}
-			if(isset($records)){
-				if(($file != null)&&((is_writable($file))||(!is_file($file)))){
-					$json = fopen($file, 'w');
-					fwrite($json, json_encode($records, JSON_PRETTY_PRINT));
-					fclose($json);
-					return $records;
-				} else { return ["error" => "Unable to write in ".$file,"records" => $records]; }
-			} else { return ["error" => "No records found"]; }
+		$SQLoptions = '';
+		$SQLargs = [];
+		if(!isset($options['tables'])){ $tables = $this->getTables($this->Database); } else { $tables = $options['tables']; }
+		if((isset($options['maxID']))||(isset($options['minID']))){
+			if($SQLoptions == ''){ $SQLoptions .= ' WHERE'; }
+			if(isset($options['maxID'])){ $SQLoptions .= ' id <= ?'; array_push($SQLargs,$options['maxID']); }
+			if(isset($options['minID'])){ $SQLoptions .= ' id >= ?'; array_push($SQLargs,$options['minID']); }
 		}
+		foreach($tables as $table){
+			if(!empty($SQLargs)){ $results = $this->Query('SELECT * FROM `'.$table.'`'.$SQLoptions,$SQLargs); }
+			else { $results = $this->Query('SELECT * FROM `'.$table.'`'); }
+			if($results != null){ $records[$table] = $results->fetchAll(); }
+		}
+		if(isset($records)){
+			if(($file != null)&&((is_writable($file))||(!is_file($file)))){
+				$json = fopen($file, 'w');
+				fwrite($json, json_encode($records, JSON_PRETTY_PRINT));
+				fclose($json);
+				return $records;
+			} else { return ["error" => "Unable to write in ".$file,"records" => $records]; }
+		} else { return ["error" => "No records found"]; }
 	}
 }
 
