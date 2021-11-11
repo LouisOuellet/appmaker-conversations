@@ -1,7 +1,7 @@
 {
     "repository": {
         "name": "appmaker-conversations",
-        "branch": "pre-release",
+        "branch": "dev",
         "manifest": "\/dist\/data\/manifest.json",
         "host": {
             "git": "https:\/\/github.com\/LouisOuellet\/",
@@ -13,6 +13,6 @@
     ],
     "name": "conversations",
     "status": false,
-    "build": 28,
-    "version": "21.11-pre-release"
+    "build": 29,
+    "version": "21.11-dev"
 }
