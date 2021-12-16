@@ -31,7 +31,9 @@ API.Plugins.conversations = {
 			var container = $('div[data-plugin="conversations"][data-id]').last();
 			var url = new URL(window.location.href);
 			var id = url.searchParams.get("id");
-			console.log(container,url,id);
+			console.log(container);
+			console.log(url);
+			console.log(id);
 			API.request(url.searchParams.get("p"),'get',{data:{id:id,key:'id'}},function(result){
 				console.log(result)
 				var dataset = JSON.parse(result);
