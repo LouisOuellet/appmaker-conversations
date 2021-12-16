@@ -6,120 +6,133 @@ class conversationsAPI extends CRUDAPI {
 	public function get($request = null, $data = null){
 		if(isset($data)){
 			if(!is_array($data)){ $data = json_decode($data, true); }
-			if(!isset($data['key'])){ $data['key'] = 'id'; }
-			// Init Return
-			$return = false;
-			// Fetch Organization
-			$organization = $this->Auth->read($request,$data['id'],$data['key']);
-			if($organization != null){
-				$organization = $organization->all()[0];
-				foreach($organization as $key => $value){
-					if(!$this->Auth->valid('field',$key,1,$request)){
-						$organization[$key] = null;
-					}
-				}
-				// Fetch Assigned Organizations
-				$organizations = $this->Auth->query('SELECT * FROM `organizations` WHERE `assigned_to` = ? OR `assigned_to` LIKE ? OR `assigned_to` LIKE ? OR `assigned_to` LIKE ?',
-					$this->Auth->User['id'],
-					$this->Auth->User['id'].';%',
-					'%;'.$this->Auth->User['id'],
-					'%;'.$this->Auth->User['id'].';%'
-				)->fetchAll();
-				if(($organizations != null)&&(isset($organization['organization']))){
-					$organizations = $organizations->all();
-					foreach($organizations as $uniqueOrganization){
-						if($uniqueOrganization['id'] == $organization['organization']){ $return = true; }
-					}
-				}
-				// Fetch Relationships
-				$relationships = $this->getRelationships($request,$organization['id']);
-				// Build Organization Array
-				$organization = [
-					'raw' => $organization,
-					'dom' => $this->convertToDOM($organization),
-				];
-				// Init Details
-				$details = [];
-				// Fetch Details
-				foreach($relationships as $relations){
-					foreach($relations as $relation){
-						if(($relation['relationship'] == 'users')&&($relation['link_to'] == $this->Auth->User['id'])){ $return = true; }
-						if($this->Auth->valid('table',$relation['relationship'],1)){
-							$fetch = $this->Auth->read($relation['relationship'],$relation['link_to']);
-							if($fetch != null){
-								$details[$relation['relationship']]['raw'][$relation['link_to']] = $fetch->all()[0];
-								if($relation['relationship'] == "files"){ unset($details[$relation['relationship']]['raw'][$relation['link_to']]['file']); }
-								foreach($details[$relation['relationship']]['raw'][$relation['link_to']] as $key => $value){
-									if(!$this->Auth->valid('field',$key,1,$relation['relationship'])){
-										$details[$relation['relationship']]['raw'][$relation['link_to']][$key] = null;
-									}
-								}
-								$details[$relation['relationship']]['dom'][$relation['link_to']] = $this->convertToDOM($details[$relation['relationship']]['raw'][$relation['link_to']]);
-							}
-						}
-					}
-				}
-				// Fetch Messages Files Details
-				if(isset($details['messages']['raw'])){
-					foreach($details['messages']['raw'] as $message){
-						foreach(explode(';',$message['attachments']) as $file){
-							$file = $this->Auth->query('SELECT * FROM `files` WHERE `id` = ?',$file)->fetchAll();
-							if($file != null){
-								$file = $file->all();
-								if(!empty($file)){
-									$file = $file[0];
-									unset($file['file']);
-									$details['files']['raw'][$file['id']] = $file;
-									$details['files']['dom'][$file['id']] = $this->convertToDOM($file);
-								}
-							}
-						}
-					}
-				}
-				// Fetch Details Statuses
-				foreach($details as $table => $detail){
-					if($table != 'statuses'){
-						$statuses = $this->Auth->query('SELECT * FROM `statuses` WHERE `type` = ?',$table);
-						var_dump($table,$statuses);
-						if(!is_bool($statuses) && $statuses->numRows() > 0){
-							$statuses = $statuses->fetchAll()->all();
-							foreach($statuses as $status){
-								$details['statuses']['raw'][$status['id']] = $status;
-								$details['statuses']['dom'][$status['id']] = $this->convertToDOM($status);
-							}
-						}
-					}
-				}
-				// Test Permissions
-				if(($this->Auth->valid('plugin',$request,1))&&($this->Auth->valid('view','details',1,$request))){ $return = true; }
-				// Return
-				if($return){
-					return [
-						"success" => $this->Language->Field["This request was successfull"],
-						"request" => $request,
-						"data" => $data,
-						"output" => [
-							'this' => $organization,
-							'relationships' => $relationships,
-							'details' => $details,
-						],
-					];
-				} else {
-					return [
-						"error" => $this->Language->Field["You are not allowed to access this record"],
-						"request" => $request,
-						"data" => $data,
-					];
-				}
-			} else {
-				return [
-					"error" => $this->Language->Field["Unknown record"],
-					"request" => $request,
-					"data" => $data,
-				];
-			}
+			$this->Auth->setLimit(0);
+			// Load Event
+			$get = parent::get('conversations', $data);
+			// Build Relations
+			$get = $this->buildRelations($get);
+			// Return
+			return $get;
 		}
 	}
+
+	// public function get($request = null, $data = null){
+	// 	if(isset($data)){
+	// 		if(!is_array($data)){ $data = json_decode($data, true); }
+	// 		if(!isset($data['key'])){ $data['key'] = 'id'; }
+	// 		// Init Return
+	// 		$return = false;
+	// 		// Fetch Organization
+	// 		$organization = $this->Auth->read($request,$data['id'],$data['key']);
+	// 		if($organization != null){
+	// 			$organization = $organization->all()[0];
+	// 			foreach($organization as $key => $value){
+	// 				if(!$this->Auth->valid('field',$key,1,$request)){
+	// 					$organization[$key] = null;
+	// 				}
+	// 			}
+	// 			// Fetch Assigned Organizations
+	// 			$organizations = $this->Auth->query('SELECT * FROM `organizations` WHERE `assigned_to` = ? OR `assigned_to` LIKE ? OR `assigned_to` LIKE ? OR `assigned_to` LIKE ?',
+	// 				$this->Auth->User['id'],
+	// 				$this->Auth->User['id'].';%',
+	// 				'%;'.$this->Auth->User['id'],
+	// 				'%;'.$this->Auth->User['id'].';%'
+	// 			)->fetchAll();
+	// 			if(($organizations != null)&&(isset($organization['organization']))){
+	// 				$organizations = $organizations->all();
+	// 				foreach($organizations as $uniqueOrganization){
+	// 					if($uniqueOrganization['id'] == $organization['organization']){ $return = true; }
+	// 				}
+	// 			}
+	// 			// Fetch Relationships
+	// 			$relationships = $this->getRelationships($request,$organization['id']);
+	// 			// Build Organization Array
+	// 			$organization = [
+	// 				'raw' => $organization,
+	// 				'dom' => $this->convertToDOM($organization),
+	// 			];
+	// 			// Init Details
+	// 			$details = [];
+	// 			// Fetch Details
+	// 			foreach($relationships as $relations){
+	// 				foreach($relations as $relation){
+	// 					if(($relation['relationship'] == 'users')&&($relation['link_to'] == $this->Auth->User['id'])){ $return = true; }
+	// 					if($this->Auth->valid('table',$relation['relationship'],1)){
+	// 						$fetch = $this->Auth->read($relation['relationship'],$relation['link_to']);
+	// 						if($fetch != null){
+	// 							$details[$relation['relationship']]['raw'][$relation['link_to']] = $fetch->all()[0];
+	// 							if($relation['relationship'] == "files"){ unset($details[$relation['relationship']]['raw'][$relation['link_to']]['file']); }
+	// 							foreach($details[$relation['relationship']]['raw'][$relation['link_to']] as $key => $value){
+	// 								if(!$this->Auth->valid('field',$key,1,$relation['relationship'])){
+	// 									$details[$relation['relationship']]['raw'][$relation['link_to']][$key] = null;
+	// 								}
+	// 							}
+	// 							$details[$relation['relationship']]['dom'][$relation['link_to']] = $this->convertToDOM($details[$relation['relationship']]['raw'][$relation['link_to']]);
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+	// 			// Fetch Messages Files Details
+	// 			if(isset($details['messages']['raw'])){
+	// 				foreach($details['messages']['raw'] as $message){
+	// 					foreach(explode(';',$message['attachments']) as $file){
+	// 						$file = $this->Auth->query('SELECT * FROM `files` WHERE `id` = ?',$file)->fetchAll();
+	// 						if($file != null){
+	// 							$file = $file->all();
+	// 							if(!empty($file)){
+	// 								$file = $file[0];
+	// 								unset($file['file']);
+	// 								$details['files']['raw'][$file['id']] = $file;
+	// 								$details['files']['dom'][$file['id']] = $this->convertToDOM($file);
+	// 							}
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+	// 			// Fetch Details Statuses
+	// 			foreach($details as $table => $detail){
+	// 				if($table != 'statuses'){
+	// 					$statuses = $this->Auth->query('SELECT * FROM `statuses` WHERE `type` = ?',$table);
+	// 					var_dump($table,$statuses);
+	// 					if(!is_bool($statuses) && $statuses->numRows() > 0){
+	// 						$statuses = $statuses->fetchAll()->all();
+	// 						foreach($statuses as $status){
+	// 							$details['statuses']['raw'][$status['id']] = $status;
+	// 							$details['statuses']['dom'][$status['id']] = $this->convertToDOM($status);
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+	// 			// Test Permissions
+	// 			if(($this->Auth->valid('plugin',$request,1))&&($this->Auth->valid('view','details',1,$request))){ $return = true; }
+	// 			// Return
+	// 			if($return){
+	// 				return [
+	// 					"success" => $this->Language->Field["This request was successfull"],
+	// 					"request" => $request,
+	// 					"data" => $data,
+	// 					"output" => [
+	// 						'this' => $organization,
+	// 						'relationships' => $relationships,
+	// 						'details' => $details,
+	// 					],
+	// 				];
+	// 			} else {
+	// 				return [
+	// 					"error" => $this->Language->Field["You are not allowed to access this record"],
+	// 					"request" => $request,
+	// 					"data" => $data,
+	// 				];
+	// 			}
+	// 		} else {
+	// 			return [
+	// 				"error" => $this->Language->Field["Unknown record"],
+	// 				"request" => $request,
+	// 				"data" => $data,
+	// 			];
+	// 		}
+	// 	}
+	// }
 
 	public function buildConversations(){
     $messages = $this->Auth->query('SELECT * FROM `messages` WHERE `isAttached` <> ? OR `isAttached` IS NULL','true')->fetchAll()->all();
