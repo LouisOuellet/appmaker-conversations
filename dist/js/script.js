@@ -276,25 +276,6 @@ API.Plugins.conversations = {
 		},
 	},
 	GUI:{
-		picture:function(dataset,layout){
-			var html = '';
-			html += '<div class="col-sm-12 col-md-6 col-lg-4 picture" data-picture="'+dataset.id+'">';
-				html += '<div class="card pointer addContact">';
-					html += '<div class="card-body p-0">';
-						html += '<div class="text-center">';
-							html += '<img class="img-fluid" data-picture="'+dataset.id+'" style="border-radius:4px;" src="'+dataset.dirname+'/'+dataset.basename+'" alt="'+dataset.basename+'" />';
-							html += '<button class="btn btn-danger collapse align-middle" data-picture="'+dataset.id+'"><i class="fas fa-trash-alt my-4"></i></button>';
-						html += '</div>';
-					html += '</div>';
-				html += '</div>';
-			html += '</div>';
-			layout.content.galleries.area.prepend(html);
-			var picture = layout.content.galleries.area.find('div[data-picture="'+dataset.id+'"]').first();
-			picture.find('div.card').off().on({
-		    mouseenter:function(){ picture.find('button').collapse('show'); },
-		    mouseleave:function(){ picture.find('button').collapse('hide'); }
-			});
-		},
 		contact:function(dataset,layout,plugin = 'contacts'){
 			var area = layout.content[plugin].find('div.row').eq(1);
 			area.prepend(API.Plugins.events.GUI.card(dataset));
@@ -342,34 +323,6 @@ API.Plugins.conversations = {
 			else { defaults.content = dataset[defaults.key]; }
 			if(defaults.content != ''){ defaults.icon += ' mr-1'; }
 			return '<button type="button" class="btn btn-sm bg-'+defaults.color+'" data-id="'+dataset[defaults.id]+'" data-action="'+defaults.action+'"><i class="'+defaults.icon+'"></i>'+defaults.content+'</button>';
-		},
-		items:function(dataset,layout,item,options = {},callback = null){
-			if(options instanceof Function){ callback = options; options = {}; }
-			var csv = '';
-			for(var [key, value] of Object.entries(item)){
-				if(value == null){ value = '';item[key] = value; };
-				if(jQuery.inArray(key,['date','time','title','description']) != -1){
-					if(csv != ''){ csv += '|'; }
-					csv += API.Helper.html2text(value.toLowerCase());
-				}
-			}
-			var body = layout.content.event_items.find('tbody');
-			var html = '';
-			html += '<tr data-csv="'+csv+'" data-id="'+item.id+'">';
-				html += '<td>'+item.date+'</td>';
-				html += '<td>'+item.time+'</td>';
-				html += '<td>'+item.title+'</td>';
-				html += '<td>'+item.description+'</td>';
-				html += '<td>';
-					html += '<div class="btn-group btn-block m-0">';
-						html += '<button class="btn btn-sm btn-warning" data-action="edit"><i class="fas fa-edit mr-1"></i>'+API.Contents.Language['Edit']+'</button>';
-						html += '<button class="btn btn-sm btn-danger" data-action="delete"><i class="fas fa-trash-alt"></i></button>';
-					html += '</div>';
-				html += '</td>';
-			html += '</tr>';
-			body.append(html);
-			var tr = body.find('tr').last();
-			if(callback != null){ callback(dataset,layout,item,tr); }
 		},
 		buttons:{
 			details:function(dataset,options = {}){
