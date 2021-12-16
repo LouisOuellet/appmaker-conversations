@@ -79,9 +79,9 @@ class conversationsAPI extends CRUDAPI {
 				// Fetch Details Statuses
 				foreach($details as $table => $detail){
 					if($table != 'statuses'){
-						$statuses = $this->Auth->query('SELECT * FROM `statuses` WHERE `type` = ?',$table)->fetchAll();
-						if($statuses != null){
-							$statuses = $statuses->all();
+						$statuses = $this->Auth->query('SELECT * FROM `statuses` WHERE `type` = ?',$table);
+						if($statuses->numRows() > 0){
+							$statuses = $statuses->fetchAll()->all();
 							foreach($statuses as $status){
 								$details['statuses']['raw'][$status['id']] = $status;
 								$details['statuses']['dom'][$status['id']] = $this->convertToDOM($status);
