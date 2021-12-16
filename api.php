@@ -318,7 +318,7 @@ class conversationsAPI extends CRUDAPI {
   }
 
   protected function parseReference($string){
-    $replace = ['---','--','CID:','CNTR-','PARS-','UTF-8','CCN:','CN:','OTHER:','PO:','REF:','NBR:','INV:','OTHER:','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
+    $replace = ['---','--','CID:','CNTR-','PARS-','UTF-8','CCN:','CCN#','CN:','CN#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
     foreach($replace as $str1){ $string = str_replace($str1,'',strtoupper($string)); }
 		if(strlen(str_replace('-','',$string))==14 && preg_match('/^[0-9]+$/', str_replace('-','',$string))){
 			$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeHVS` LIKE ?',(substr(str_replace('-','',$string), 0, 5)))->fetchAll()->all();
