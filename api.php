@@ -80,6 +80,7 @@ class conversationsAPI extends CRUDAPI {
 				foreach($details as $table => $detail){
 					if($table != 'statuses'){
 						$statuses = $this->Auth->query('SELECT * FROM `statuses` WHERE `type` = ?',$table);
+						var_dump($statuses->numRows());
 						if($statuses->numRows() > 0){
 							$statuses = $statuses->fetchAll()->all();
 							foreach($statuses as $status){
