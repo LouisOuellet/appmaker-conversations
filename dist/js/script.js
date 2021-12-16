@@ -41,6 +41,7 @@ API.Plugins.conversations = {
 			var id = url.searchParams.get("id");
 			API.request(url.searchParams.get("p"),'get',{data:{id:id,key:'id'}},function(result){
 				var dataset = JSON.parse(result);
+				console.log(container,dataset);
 				if(dataset.success != undefined){
 					container.attr('data-id',dataset.output.this.raw.id);
 					// GUI
