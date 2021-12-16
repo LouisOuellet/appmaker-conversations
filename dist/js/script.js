@@ -27,7 +27,6 @@ API.Plugins.conversations = {
 			});
 		},
 		details:function(){
-			console.log('details');
 			var container = $('div[data-plugin="conversations"][data-id]').last();
 			var url = new URL(window.location.href);
 			var id = url.searchParams.get("id");
