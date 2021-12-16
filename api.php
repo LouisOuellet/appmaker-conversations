@@ -7,13 +7,10 @@ class conversationsAPI extends CRUDAPI {
 		if(isset($data)){
 			if(!is_array($data)){ $data = json_decode($data, true); }
 			$this->Auth->setLimit(0);
-			var_dump($data);
 			// Load Event
 			$get = parent::get('conversations', $data);
-			var_dump($get);
 			// Build Relations
 			$get = $this->buildRelations($get);
-			var_dump($get);
 			// Return
 			return $get;
 		}
