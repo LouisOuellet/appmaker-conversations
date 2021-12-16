@@ -1,11 +1,4 @@
 API.Plugins.conversations = {
-	element:{
-		table:{
-			index:{},
-			clients:{},
-		},
-		count:0,
-	},
 	init:function(){
 		API.GUI.Sidebar.Nav.add('conversations', 'main_navigation');
 	},
@@ -28,9 +21,7 @@ API.Plugins.conversations = {
 							controls:{ toolbar:true},
 							import:{ key:'id', },
 							load:false,
-						},function(response){
-							API.Plugins.conversations.element.table.index = response.table;
-						});
+						},function(response){});
 					}
 				});
 			});
