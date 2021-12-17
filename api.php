@@ -348,8 +348,8 @@ class conversationsAPI extends CRUDAPI {
 							'link_to_1' => $conversation['id'],
 							'relationship_2' => 'messages',
 							'link_to_2' => $message['id'],
-							$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
 						]);
+						$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
 						break;
 					}
 				}
