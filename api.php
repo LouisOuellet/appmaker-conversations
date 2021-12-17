@@ -279,7 +279,7 @@ class conversationsAPI extends CRUDAPI {
     $replace = ['---','--','CID:','CNTR-','PARS-','UTF-8','CCN:','CCN#','CN:','CN#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
     foreach($replace as $str1){ $string = str_replace($str1,'',strtoupper($string)); }
 		if(strlen(str_replace('-','',$string))==14 && preg_match('/^[0-9]+$/', str_replace('-','',$string))){
-			$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeHVS` LIKE ?',(substr(str_replace('-','',$string), 0, 5)))->fetchAll()->all();
+			$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeHVS` LIKE ? OR `setCodeLVS` LIKE ?',(substr(str_replace('-','',$string), 0, 5)),(substr(str_replace('-','',$string), 0, 5)))->fetchAll()->all();
 			if(!empty($organization)){ return "TR:".strtoupper(str_replace('-','',$string)); }
 		}
 		if(strlen($string)>=10){
