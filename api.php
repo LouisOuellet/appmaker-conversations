@@ -182,25 +182,12 @@ class conversationsAPI extends CRUDAPI {
           $conversation['messages'] = explode(";",$conversation['messages']);
           if(!in_array($message['mid'], $conversation['messages'])){
 						array_push($conversation['messages'],$message['mid']);
-						$this->Auth->query('INSERT INTO `relationships` (
-							`created`,
-							`modified`,
-							`owner`,
-							`updated_by`,
-							`relationship_1`,
-							`link_to_1`,
-							`relationship_2`,
-							`link_to_2`
-						) VALUES (?,?,?,?,?,?,?,?)',
-							date("Y-m-d H:i:s"),
-							date("Y-m-d H:i:s"),
-							$this->Auth->User['id'],
-							$this->Auth->User['id'],
-							'conversations',
-							$conversation['id'],
-							'messages',
-							$message['id']
-						)->dump();
+						$this->createRelationship([
+							'relationship_1' => 'conversations',
+							'link_to_1' => $conversation['id'],
+							'relationship_2' => 'messages',
+							'link_to_2' => $message['id'],
+						]);
 					}
           $conversation['messages'] = trim(implode(";",$conversation['messages']),';');
           $conversation['contacts'] = explode(";",$conversation['contacts']);
@@ -216,25 +203,12 @@ class conversationsAPI extends CRUDAPI {
               if(!empty($organization)){
                 if(!in_array($organization[0]['id'], $conversation['organizations'])){
 									array_push($conversation['organizations'],$organization[0]['id']);
-									$this->Auth->query('INSERT INTO `relationships` (
-										`created`,
-										`modified`,
-										`owner`,
-										`updated_by`,
-										`relationship_1`,
-										`link_to_1`,
-										`relationship_2`,
-										`link_to_2`
-									) VALUES (?,?,?,?,?,?,?,?)',
-										date("Y-m-d H:i:s"),
-										date("Y-m-d H:i:s"),
-										$this->Auth->User['id'],
-										$this->Auth->User['id'],
-										'conversations',
-										$conversation['id'],
-										'organizations',
-										$organization[0]['id']
-									)->dump();
+									$this->createRelationship([
+										'relationship_1' => 'conversations',
+										'link_to_1' => $conversation['id'],
+										'relationship_2' => 'organizations',
+										'link_to_2' => $organization[0]['id'],
+									]);
 								}
               }
             }
@@ -249,25 +223,12 @@ class conversationsAPI extends CRUDAPI {
 								$file = $file->all()[0];
 								if(!in_array($file['type'],$this->Blacklist)){
 									array_push($conversation['files'],$file);
-									$this->Auth->query('INSERT INTO `relationships` (
-										`created`,
-										`modified`,
-										`owner`,
-										`updated_by`,
-										`relationship_1`,
-										`link_to_1`,
-										`relationship_2`,
-										`link_to_2`
-									) VALUES (?,?,?,?,?,?,?,?)',
-										date("Y-m-d H:i:s"),
-										date("Y-m-d H:i:s"),
-										$this->Auth->User['id'],
-										$this->Auth->User['id'],
-										'conversations',
-										$conversation['id'],
-										'files',
-										$file
-									)->dump();
+									$this->createRelationship([
+										'relationship_1' => 'conversations',
+										'link_to_1' => $conversation['id'],
+										'relationship_2' => 'files',
+										'link_to_2' => $file,
+									]);
 								}
 							}
 						}
@@ -282,6 +243,7 @@ class conversationsAPI extends CRUDAPI {
           $conversation['hasNew'] = "true";
           $conversation['id'] = $this->saveConversation($conversation);
           $query = $this->Auth->query('UPDATE `messages` SET `isAttached` = ? WHERE `id` = ?',["true",$message["id"]])->dump();
+					$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
         } else {
           // Create a new Conversation
           $conversation = [
@@ -326,6 +288,7 @@ class conversationsAPI extends CRUDAPI {
           $conversation['files'] = trim(implode(";",$conversation['files']),';');
           $conversation['id'] = $this->saveConversation($conversation,$messages);
           $query = $this->Auth->query('UPDATE `messages` SET `isAttached` = ? WHERE `id` = ?',["true",$message["id"]])->dump();
+					$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
         }
       }
     }

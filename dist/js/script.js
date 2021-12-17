@@ -37,7 +37,7 @@ API.Plugins.conversations = {
 					// GUI
 					// Adding Layout
 					bgImage = '/plugins/conversations/dist/img/conversation.png';
-					API.GUI.Layouts.details.build(dataset.output,container,{title:"Event Details",image:bgImage},function(data,layout){
+					API.GUI.Layouts.details.build(dataset.output,container,{title:"Conversation Details",image:bgImage},function(data,layout){
 						if(layout.main.parents().eq(2).parent('.modal-body').length > 0){
 							var modal = layout.main.parents().eq(2).parent('.modal-body').parents().eq(2);
 							if(API.Auth.validate('plugin', 'conversations', 3)){
