@@ -1,3 +1,19 @@
 {
-    "conversations": []
+    "conversations": [
+        {
+            "id": 100000,
+            "created": "2021-12-17 13:15:43",
+            "modified": "2021-12-17 13:15:43",
+            "owner": "1",
+            "updated_by": "1",
+            "account": "customs@albcie.com",
+            "status": 1,
+            "messages": "202112171700.1BHH06DS006748@itmapp09.prd.dsg-internal",
+            "files": "100000",
+            "organizations": "1",
+            "contacts": "pars@albcustoms.com;customs@albcie.com",
+            "meta": "[\n    \"OTHER:MAISON1443\",\n    \"TR:10013000773740\",\n    \"OTHER:8076144414536\",\n    \"CN:EGHU8293910\",\n    \"OTHER:039803\"\n]",
+            "hasNew": "true"
+        }
+    ]
 }

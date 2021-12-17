@@ -394,6 +394,7 @@ class conversationsAPI extends CRUDAPI {
 			switch($meta[0]){
 				case"TR":
 					if(isset($this->Settings['plugins']['b3']['status']) && $this->Settings['plugins']['b3']['status']){
+						require_once dirname(__FILE__,3).'/plugins/b3/api.php';
 						$B3 = new b3API();
 						$B3->saveB3from('conversations',$conversation);
 					}
