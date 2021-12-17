@@ -282,7 +282,6 @@ class conversationsAPI extends CRUDAPI {
           $conversation['files'] = trim(implode(";",$conversation['files']),';');
           $conversation['id'] = $this->saveConversation($conversation,$messages);
           $query = $this->Auth->query('UPDATE `messages` SET `isAttached` = ? WHERE `id` = ?',["true",$message["id"]])->dump();
-					$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
         }
       }
     }
@@ -341,73 +340,39 @@ class conversationsAPI extends CRUDAPI {
       );
       $dump = $query->dump();
 			$conversation['id'] = $dump['insert_id'];
-			foreach(explode(';',$conversation["messages"]) as $mid){
+			foreach(explode(';',trim($conversation['messages'],';')) as $mid){
 				foreach($messages as $message){
 					if($message['mid'] == $mid){
-						$this->Auth->query('INSERT INTO `relationships` (
-			        `created`,
-			        `modified`,
-			        `owner`,
-			        `updated_by`,
-			        `relationship_1`,
-			        `link_to_1`,
-			        `relationship_2`,
-			        `link_to_2`
-			      ) VALUES (?,?,?,?,?,?,?,?)',
-			        $conversation["created"],
-			        $conversation["modified"],
-			        $conversation["owner"],
-			        $conversation["updated_by"],
-			        'conversations',
-			        $conversation['id'],
-			        'messages',
-			        $message['id']
-			      )->dump();
+						$this->createRelationship([
+							'relationship_1' => 'conversations',
+							'link_to_1' => $conversation['id'],
+							'relationship_2' => 'messages',
+							'link_to_2' => $message['id'],
+							$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
+						]);
 						break;
 					}
 				}
 			}
-			foreach(explode(';',$conversation["files"]) as $file){
-				$this->Auth->query('INSERT INTO `relationships` (
-					`created`,
-					`modified`,
-					`owner`,
-					`updated_by`,
-					`relationship_1`,
-					`link_to_1`,
-					`relationship_2`,
-					`link_to_2`
-				) VALUES (?,?,?,?,?,?,?,?)',
-					$conversation["created"],
-					$conversation["modified"],
-					$conversation["owner"],
-					$conversation["updated_by"],
-					'conversations',
-					$conversation['id'],
-					'files',
-					$file
-				)->dump();
+			foreach(explode(';',trim($conversation['files'],';')) as $file){
+				if($file != '' && $file != null){
+					$this->createRelationship([
+						'relationship_1' => 'conversations',
+						'link_to_1' => $conversation['id'],
+						'relationship_2' => 'files',
+						'link_to_2' => $file,
+					]);
+				}
 			}
-			foreach(explode(';',$conversation["organizations"]) as $organization){
-				$this->Auth->query('INSERT INTO `relationships` (
-					`created`,
-					`modified`,
-					`owner`,
-					`updated_by`,
-					`relationship_1`,
-					`link_to_1`,
-					`relationship_2`,
-					`link_to_2`
-				) VALUES (?,?,?,?,?,?,?,?)',
-					$conversation["created"],
-					$conversation["modified"],
-					$conversation["owner"],
-					$conversation["updated_by"],
-					'conversations',
-					$conversation['id'],
-					'organizations',
-					$organization
-				)->dump();
+			foreach(explode(';',trim($conversation['organizations'],';')) as $organization){
+				if($organization != '' && $organization != null){
+					$this->createRelationship([
+						'relationship_1' => 'conversations',
+						'link_to_1' => $conversation['id'],
+						'relationship_2' => 'organizations',
+						'link_to_2' => $organization,
+					]);
+				}
 			}
       set_time_limit(20);
       return $dump['insert_id'];
