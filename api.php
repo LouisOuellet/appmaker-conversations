@@ -279,7 +279,7 @@ class conversationsAPI extends CRUDAPI {
 							}
 						}
 					}
-          $conversation['files'] = implode(";",trim($conversation['files'],';'));
+          $conversation['files'] = trim(implode(";",$conversation['files']),';');
           $conversation['id'] = $this->saveConversation($conversation,$messages);
           $query = $this->Auth->query('UPDATE `messages` SET `isAttached` = ? WHERE `id` = ?',["true",$message["id"]])->dump();
         }
