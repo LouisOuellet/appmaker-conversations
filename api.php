@@ -274,7 +274,7 @@ class conversationsAPI extends CRUDAPI {
 							if($file != null){
 								$file = $file->all()[0];
 								if(!in_array($file['type'],$this->Blacklist)){
-									array_push($conversation['files'],$file);
+									array_push($conversation['files'],$file['id']);
 								}
 							}
 						}
