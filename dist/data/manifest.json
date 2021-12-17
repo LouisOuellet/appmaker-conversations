@@ -8,11 +8,13 @@
             "raw": "https:\/\/raw.githubusercontent.com\/LouisOuellet\/"
         }
     },
-    "table": [
-        "conversations"
-    ],
+    "requirements": {
+        "table": [
+            "conversations"
+        ]
+    },
     "name": "conversations",
     "status": false,
-    "build": 86,
+    "build": 87,
     "version": "21.12-dev"
 }
