@@ -281,28 +281,28 @@ API.Plugins.conversations = {
 			area.prepend(API.Plugins.conversations.GUI.card(dataset));
 			var card = area.find('div.col-sm-12.col-md-6').first();
 			if(API.Helper.isSet(dataset,['users'])){
-				if(API.Auth.validate('custom', 'events_'+plugin+'_btn_details', 1)){
-					card.find('div.btn-group').append(API.Plugins.events.GUI.button(dataset,{id:'id',color:'primary',icon:'fas fa-user',action:'details',content:API.Contents.Language['Details']}));
+				if(API.Auth.validate('custom', 'conversations_'+plugin+'_btn_details', 1)){
+					card.find('div.btn-group').append(API.Plugins.conversations.GUI.button(dataset,{id:'id',color:'primary',icon:'fas fa-user',action:'details',content:API.Contents.Language['Details']}));
 				}
 			} else {
-				if(API.Auth.validate('custom', 'events_'+plugin+'_btn_link', 1)){
-					card.find('div.btn-group').append(API.Plugins.events.GUI.button(dataset,{id:'id',color:'teal',icon:'fas fa-link',action:'link',content:API.Contents.Language['Add User']}));
+				if(API.Auth.validate('custom', 'conversations_'+plugin+'_btn_link', 1)){
+					card.find('div.btn-group').append(API.Plugins.conversations.GUI.button(dataset,{id:'id',color:'teal',icon:'fas fa-link',action:'link',content:API.Contents.Language['Add User']}));
 				}
 			}
 			if(API.Helper.isSet(dataset,['event_attendances'])){
-				if(API.Auth.validate('custom', 'events_'+plugin+'_btn_attendance', 1)){
-					card.find('div.btn-group').append(API.Plugins.events.GUI.button(dataset,{id:'id',color:'navy',icon:'fas fa-calendar-check',action:'attendance',content:API.Contents.Language['Attendance']}));
+				if(API.Auth.validate('custom', 'conversations_'+plugin+'_btn_attendance', 1)){
+					card.find('div.btn-group').append(API.Plugins.conversations.GUI.button(dataset,{id:'id',color:'navy',icon:'fas fa-calendar-check',action:'attendance',content:API.Contents.Language['Attendance']}));
 				}
 			} else {
-				if(API.Auth.validate('custom', 'events_'+plugin+'_btn_add_attendance', 1)){
-					card.find('div.btn-group').append(API.Plugins.events.GUI.button(dataset,{id:'id',color:'olive',icon:'fas fa-calendar-plus',action:'add',content:API.Contents.Language['Add Attendance']}));
+				if(API.Auth.validate('custom', 'conversations_'+plugin+'_btn_add_attendance', 1)){
+					card.find('div.btn-group').append(API.Plugins.conversations.GUI.button(dataset,{id:'id',color:'olive',icon:'fas fa-calendar-plus',action:'add',content:API.Contents.Language['Add Attendance']}));
 				}
 			}
-			if(API.Auth.validate('custom', 'events_'+plugin+'_btn_edit', 1)){
-				card.find('div.btn-group').append(API.Plugins.events.GUI.button(dataset,{id:'id',color:'warning',icon:'fas fa-edit',action:'edit',content:API.Contents.Language['Edit']}));
+			if(API.Auth.validate('custom', 'conversations_'+plugin+'_btn_edit', 1)){
+				card.find('div.btn-group').append(API.Plugins.conversations.GUI.button(dataset,{id:'id',color:'warning',icon:'fas fa-edit',action:'edit',content:API.Contents.Language['Edit']}));
 			}
-			if(API.Auth.validate('custom', 'events_'+plugin+'_btn_delete', 1)){
-				card.find('div.btn-group').append(API.Plugins.events.GUI.button(dataset,{id:'id',color:'danger',icon:'fas fa-trash-alt',action:'delete',content:''}));
+			if(API.Auth.validate('custom', 'conversations_'+plugin+'_btn_delete', 1)){
+				card.find('div.btn-group').append(API.Plugins.conversations.GUI.button(dataset,{id:'id',color:'danger',icon:'fas fa-trash-alt',action:'delete',content:''}));
 			}
 		},
 		button:function(dataset,options = {}){
@@ -406,13 +406,13 @@ API.Plugins.conversations = {
 			if(options instanceof Function){ callback = options; options = {}; }
 			var defaults = {field: "name"};
 			if(API.Helper.isSet(options,['field'])){ defaults.field = options.field; }
-			if(API.Auth.validate('custom', 'events_notes', 2)){
+			if(API.Auth.validate('custom', 'conversations_notes', 2)){
 				layout.content.notes.find('button').off().click(function(){
 				  if(!layout.content.notes.find('textarea').summernote('isEmpty')){
 				    var note = {
 				      by:API.Contents.Auth.User.id,
 				      content:layout.content.notes.find('textarea').summernote('code'),
-				      relationship:'events',
+				      relationship:'conversations',
 				      link_to:dataset.this.dom.id,
 				      status:dataset.this.raw.status,
 				    };
@@ -428,12 +428,12 @@ API.Plugins.conversations = {
 				      ],
 				      height: 250,
 				    });
-				    API.request('events','note',{data:note},function(result){
+				    API.request('conversations','note',{data:note},function(result){
 				      var data = JSON.parse(result);
 				      if(data.success != undefined){
 				        API.Builder.Timeline.add.card(layout.timeline,data.output.note.dom,'sticky-note','warning',function(item){
 				          item.find('.timeline-footer').remove();
-				          if(API.Auth.validate('custom', 'events_notes', 4)){
+				          if(API.Auth.validate('custom', 'conversations_notes', 4)){
 				            $('<a class="time bg-warning pointer"><i class="fas fa-trash-alt"></i></a>').insertAfter(item.find('span.time.bg-warning'));
 										item.find('a.pointer').off().click(function(){
 											API.CRUD.delete.show({ keys:data.output.note.dom,key:'id', modal:true, plugin:'notes' },function(note){
@@ -479,9 +479,9 @@ API.Plugins.conversations = {
 					contacts.find('[data-csv*="'+$(this).val().toLowerCase()+'"]').each(function(){ $(this).show(); });
 				} else { contacts.find('[data-csv]').show(); }
 			});
-			if(API.Auth.validate('custom', 'events_contacts', 2)){
+			if(API.Auth.validate('custom', 'conversations_contacts', 2)){
 				contacts.find('.addContact').off().click(function(){
-					API.CRUD.create.show({ plugin:'contacts', keys:skeleton, set:{isActive:'true',relationship:'events',link_to:dataset.this.raw.id} },function(created,user){
+					API.CRUD.create.show({ plugin:'contacts', keys:skeleton, set:{isActive:'true',relationship:'conversations',link_to:dataset.this.raw.id} },function(created,user){
 						if(created){
 							user.dom.name = '';
 							if((user.dom.first_name != '')&&(user.dom.first_name != null)){ if(user.dom.name != ''){user.dom.name += ' ';} user.dom.name += user.dom.first_name; }
@@ -490,8 +490,8 @@ API.Plugins.conversations = {
 							API.Helper.set(dataset,['details','contacts','dom',user.dom.id],user.dom);
 							API.Helper.set(dataset,['details','contacts','raw',user.raw.id],user.raw);
 							API.Helper.set(dataset,['relations','contacts',user.dom.id],user.dom);
-							API.Plugins.events.GUI.contact(user.dom,layout);
-							API.Plugins.events.Events.contacts(dataset,layout);
+							API.Plugins.conversations.GUI.contact(user.dom,layout);
+							API.Plugins.conversations.Events.contacts(dataset,layout);
 							API.Builder.Timeline.add.contact(layout.timeline,user.dom,'address-card','secondary',function(item){
 								item.find('i').first().addClass('pointer');
 								item.find('i').first().off().click(function(){
@@ -567,7 +567,7 @@ API.Plugins.conversations = {
 							header.find('button[data-control="hide"]').remove();
 							header.find('button[data-control="update"]').remove();
 							body.html('<div class="row"></div>');
-							API.Builder.input(body.find('div.row'), 'setVows', item.setVows,{plugin:'events',type:'switch'}, function(input){
+							API.Builder.input(body.find('div.row'), 'setVows', item.setVows,{plugin:'conversations',type:'switch'}, function(input){
 								input.wrap('<div class="col-md-6 py-3"></div>');
 								modal.on('shown.bs.modal',function(e){
 								  input.find('input').last().bootstrapSwitch('state', item.setVows);
@@ -586,18 +586,18 @@ API.Plugins.conversations = {
 							if((user.dom.last_name != '')&&(user.dom.last_name != null)){ if(user.dom.name != ''){user.dom.name += ' ';} user.dom.name += user.dom.last_name; }
 							API.Helper.set(dataset,['relations','contacts',user.dom.id],user.dom);
 							contacts.find('[data-id="'+user.raw.id+'"]').remove();
-							API.Plugins.events.GUI.contact(user.dom,layout);
-							API.Plugins.events.Events.contacts(dataset,layout);
+							API.Plugins.conversations.GUI.contact(user.dom,layout);
+							API.Plugins.conversations.Events.contacts(dataset,layout);
 						});
 						break;
 					case"delete":
 						contact.link_to = dataset.this.raw.id;
 						API.CRUD.delete.show({ keys:contact,key:'name', modal:true, plugin:'contacts' },function(user){
-							if(contacts.find('[data-id="'+contact.id+'"]').find('.ribbon-wrapper').length > 0 || !API.Auth.validate('custom', 'events_contacts_isActive', 1)){
+							if(contacts.find('[data-id="'+contact.id+'"]').find('.ribbon-wrapper').length > 0 || !API.Auth.validate('custom', 'conversations_contacts_isActive', 1)){
 								contacts.find('[data-id="'+contact.id+'"]').remove();
 								layout.timeline.find('[data-type="address-card"][data-id="'+contact.id+'"]').remove();
 							}
-							if(contact.isActive && API.Auth.validate('custom', 'events_contacts_isActive', 1)){
+							if(contact.isActive && API.Auth.validate('custom', 'conversations_contacts_isActive', 1)){
 								contact.isActive = user.isActive;
 								API.Helper.set(dataset,['relations','contacts',contact.id,'isActive'],contact.isActive);
 								contacts.find('[data-id="'+contact.id+'"] .card').prepend('<div class="ribbon-wrapper ribbon-xl"><div class="ribbon bg-danger text-xl">'+API.Contents.Language['Inactive']+'</div></div>');
