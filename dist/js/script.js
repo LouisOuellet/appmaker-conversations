@@ -278,7 +278,7 @@ API.Plugins.conversations = {
 	GUI:{
 		contact:function(dataset,layout,plugin = 'contacts'){
 			var area = layout.content[plugin].find('div.row').eq(1);
-			area.prepend(API.Plugins.events.GUI.card(dataset));
+			area.prepend(API.Plugins.conversations.GUI.card(dataset));
 			var card = area.find('div.col-sm-12.col-md-6').first();
 			if(API.Helper.isSet(dataset,['users'])){
 				if(API.Auth.validate('custom', 'events_'+plugin+'_btn_details', 1)){
