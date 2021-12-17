@@ -182,12 +182,6 @@ class conversationsAPI extends CRUDAPI {
           $conversation['messages'] = explode(";",$conversation['messages']);
           if(!in_array($message['mid'], $conversation['messages'])){
 						array_push($conversation['messages'],$message['mid']);
-						$this->createRelationship([
-							'relationship_1' => 'conversations',
-							'link_to_1' => $conversation['id'],
-							'relationship_2' => 'messages',
-							'link_to_2' => $message['id'],
-						]);
 					}
           $conversation['messages'] = trim(implode(";",$conversation['messages']),';');
           $conversation['contacts'] = explode(";",$conversation['contacts']);
@@ -203,12 +197,6 @@ class conversationsAPI extends CRUDAPI {
               if(!empty($organization)){
                 if(isset($organization[0]['id']) && !in_array($organization[0]['id'], $conversation['organizations'])){
 									array_push($conversation['organizations'],$organization[0]['id']);
-									$this->createRelationship([
-										'relationship_1' => 'conversations',
-										'link_to_1' => $conversation['id'],
-										'relationship_2' => 'organizations',
-										'link_to_2' => $organization[0]['id'],
-									]);
 								}
               }
             }
@@ -340,42 +328,7 @@ class conversationsAPI extends CRUDAPI {
       );
       $dump = $query->dump();
 			$conversation['id'] = $dump['insert_id'];
-			foreach(explode(';',trim($conversation['messages'],';')) as $mid){
-				foreach($messages as $message){
-					if($message['mid'] == $mid){
-						$this->createRelationship([
-							'relationship_1' => 'conversations',
-							'link_to_1' => $conversation['id'],
-							'relationship_2' => 'messages',
-							'link_to_2' => $message['id'],
-						]);
-						$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
-						break;
-					}
-				}
-			}
-			foreach(explode(';',trim($conversation['files'],';')) as $file){
-				if($file != '' && $file != null){
-					$this->createRelationship([
-						'relationship_1' => 'conversations',
-						'link_to_1' => $conversation['id'],
-						'relationship_2' => 'files',
-						'link_to_2' => $file,
-					]);
-				}
-			}
-			foreach(explode(';',trim($conversation['organizations'],';')) as $organization){
-				if($organization != '' && $organization != null){
-					$this->createRelationship([
-						'relationship_1' => 'conversations',
-						'link_to_1' => $conversation['id'],
-						'relationship_2' => 'organizations',
-						'link_to_2' => $organization,
-					]);
-				}
-			}
       set_time_limit(20);
-      return $dump['insert_id'];
     } else {
       $query = $this->Auth->query('UPDATE `conversations` SET
         `modified` = ?,
@@ -401,7 +354,48 @@ class conversationsAPI extends CRUDAPI {
       ]);
       set_time_limit(20);
       $dump = $query->dump();
-      return $conversation["id"];
     }
+		foreach(explode(';',trim($conversation['messages'],';')) as $mid){
+			foreach($messages as $message){
+				if($message['mid'] == $mid){
+					$this->createRelationship([
+						'relationship_1' => 'conversations',
+						'link_to_1' => $conversation['id'],
+						'relationship_2' => 'messages',
+						'link_to_2' => $message['id'],
+					]);
+					$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
+					break;
+				}
+			}
+		}
+		foreach(explode(';',trim($conversation['files'],';')) as $file){
+			if($file != '' && $file != null){
+				$this->createRelationship([
+					'relationship_1' => 'conversations',
+					'link_to_1' => $conversation['id'],
+					'relationship_2' => 'files',
+					'link_to_2' => $file,
+				]);
+			}
+		}
+		foreach(explode(';',trim($conversation['organizations'],';')) as $organization){
+			if($organization != '' && $organization != null){
+				$this->createRelationship([
+					'relationship_1' => 'conversations',
+					'link_to_1' => $conversation['id'],
+					'relationship_2' => 'organizations',
+					'link_to_2' => $organization,
+				]);
+			}
+		}
+		foreach(json_decode($conversation['meta'], true) as $meta){
+			$meta = explode(":",$meta);
+			switch($meta[0]){
+				case"TR":
+				default: break;
+			}
+		}
+		return $conversation["id"];
   }
 }
