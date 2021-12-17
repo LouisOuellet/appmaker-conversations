@@ -201,7 +201,7 @@ class conversationsAPI extends CRUDAPI {
             if(!empty($contact) && $contact != '' && isset(explode("@",$contact)[1])){
               $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setDomain` LIKE ?',explode("@",$contact)[1])->fetchAll()->all();
               if(!empty($organization)){
-                if(!in_array($organization[0]['id'], $conversation['organizations'])){
+                if(isset($organization[0]['id']) && !in_array($organization[0]['id'], $conversation['organizations'])){
 									array_push($conversation['organizations'],$organization[0]['id']);
 									$this->createRelationship([
 										'relationship_1' => 'conversations',
@@ -223,12 +223,6 @@ class conversationsAPI extends CRUDAPI {
 								$file = $file->all()[0];
 								if(!in_array($file['type'],$this->Blacklist)){
 									array_push($conversation['files'],$file);
-									$this->createRelationship([
-										'relationship_1' => 'conversations',
-										'link_to_1' => $conversation['id'],
-										'relationship_2' => 'files',
-										'link_to_2' => $file,
-									]);
 								}
 							}
 						}
@@ -268,7 +262,7 @@ class conversationsAPI extends CRUDAPI {
             if(!empty($contact) && $contact != '' && isset(explode("@",$contact)[1])){
               $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setDomain` LIKE ?',explode("@",$contact)[1])->fetchAll()->all();
               if(!empty($organization)){
-                if(!in_array($organization[0]['id'], $conversation['organizations'])){array_push($conversation['organizations'],$organization[0]['id']);}
+                if(isset($organization[0]['id']) && !in_array($organization[0]['id'], $conversation['organizations'])){array_push($conversation['organizations'],$organization[0]['id']);}
               }
             }
           }
