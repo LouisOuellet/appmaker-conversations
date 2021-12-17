@@ -222,7 +222,7 @@ class conversationsAPI extends CRUDAPI {
 							if($file != null){
 								$file = $file->all()[0];
 								if(!in_array($file['type'],$this->Blacklist)){
-									array_push($conversation['files'],$file);
+									array_push($conversation['files'],$file['id']);
 								}
 							}
 						}
@@ -279,9 +279,6 @@ class conversationsAPI extends CRUDAPI {
 							}
 						}
 					}
-					var_dump($conversation['files']);
-					var_dump(implode(";",$conversation['files']));
-					var_dump(trim(implode(";",$conversation['files']),';'));
           $conversation['files'] = trim(implode(";",$conversation['files']),';');
           $conversation['id'] = $this->saveConversation($conversation,$messages);
           $query = $this->Auth->query('UPDATE `messages` SET `isAttached` = ? WHERE `id` = ?',["true",$message["id"]])->dump();
