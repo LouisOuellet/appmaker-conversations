@@ -289,7 +289,26 @@ class conversationsAPI extends CRUDAPI {
     if(strlen($string)>=10 && strlen($string)<=11 && preg_match('/^[A-Z,a-z]+$/', substr($string, 0, 4)) && preg_match('/^[0-9]+$/', substr($string, 4))){
       return "CN:".strtoupper($string);
     }
-    return "OTHER:".strtoupper($string);
+		$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeITMR4` = ?',$string)->fetchAll()->all();
+		if(!empty($organization)){
+			if(isset($organization[0]['isClient']) && $organization[0]['isClient'] == "true"){
+				return "CLIENT:".strtoupper($string);
+			}
+			if(isset($organization[0]['isVendor']) && $organization[0]['isVendor'] == "true"){
+				return "VENDOR:".strtoupper($string);
+			}
+			if(isset($organization[0]['isFreightForwarder']) && $organization[0]['isFreightForwarder'] == "true"){
+				return "FREIGHTFORWARDER:".strtoupper($string);
+			}
+			if(isset($organization[0]['isCarrier']) && $organization[0]['isCarrier'] == "true"){
+				return "CARRIER:".strtoupper($string);
+			}
+			if(isset($organization[0]['isBroker']) && $organization[0]['isBroker'] == "true"){
+				return "BROKER:".strtoupper($string);
+			}
+		} else {
+			return "OTHER:".strtoupper($string);
+		}
   }
 
   protected function saveConversation($conversation,$messages = []){
