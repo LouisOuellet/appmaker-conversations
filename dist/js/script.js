@@ -217,7 +217,6 @@ API.Plugins.conversations = {
 													});
 													break;
 												default:
-													console.log(relation.relationship,details);
 													if(API.Helper.isSet(API,['Plugins',relation.relationship,'Timeline','object'])){
 														API.Plugins[relation.relationship].Timeline.object(details,layout);
 													}
