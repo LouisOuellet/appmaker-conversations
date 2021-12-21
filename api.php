@@ -150,7 +150,7 @@ class conversationsAPI extends CRUDAPI {
 						}
 					}
           $conversation['files'] = trim(implode(";",$conversation['files']),';');
-          $conversation['id'] = $this->saveConversation($conversation,$messages);
+          $conversation['id'] = $this->saveConversation($conversation);
           $query = $this->Auth->query('UPDATE `messages` SET `isAttached` = ? WHERE `id` = ?',["true",$message["id"]])->dump();
         }
       }
@@ -193,7 +193,7 @@ class conversationsAPI extends CRUDAPI {
 		}
   }
 
-  protected function saveConversation($conversation,$messages = []){
+  protected function saveConversation($conversation){
     $conversation["modified"] = date("Y-m-d H:i:s");
     $conversation["updated_by"] = $this->Auth->User['id'];
     if(!isset($conversation['id'])){
@@ -257,17 +257,16 @@ class conversationsAPI extends CRUDAPI {
       $dump = $query->dump();
     }
 		foreach(explode(';',trim($conversation['messages'],';')) as $mid){
-			foreach($messages as $message){
-				if($message['mid'] == $mid){
-					$this->createRelationship([
-						'relationship_1' => 'conversations',
-						'link_to_1' => $conversation['id'],
-						'relationship_2' => 'messages',
-						'link_to_2' => $message['id'],
-					]);
-					$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
-					break;
-				}
+			$message = $this->Auth->Read('messages',$mid,'mid');
+			if($message != null){
+				$message = $message->all()[0];
+				$this->createRelationship([
+					'relationship_1' => 'conversations',
+					'link_to_1' => $conversation['id'],
+					'relationship_2' => 'messages',
+					'link_to_2' => $message['id'],
+				]);
+				$this->copyRelationships('messages',$message['id'],'conversations',$conversation['id']);
 			}
 		}
 		foreach(explode(';',trim($conversation['files'],';')) as $file){
