@@ -152,11 +152,11 @@ API.Plugins.conversations = {
 						clearInterval(checkExist);
 						API.Builder.Timeline.add.filter(layout,'conversations','Conversations');
 						var html = '';
-						html += '<div data-plugin="conversations" data-id="'+dataset.id+'" data-name="'+dataset.name+'" data-date="'+dateItem.getTime()+'">';
+						html += '<div data-plugin="conversations" data-id="'+dataset.id+'" data-account="'+dataset.account+'" data-date="'+dateItem.getTime()+'">';
 							html += '<i class="fas fa-'+defaults.icon+' bg-'+defaults.color+'"></i>';
 							html += '<div class="timeline-item">';
 								html += '<span class="time"><i class="fas fa-clock mr-2"></i><time class="timeago" datetime="'+dataset.created.replace(/ /g, "T")+'">'+dataset.created+'</time></span>';
-								html += '<h3 class="timeline-header border-0">'+dataset.name+' was linked</h3>';
+								html += '<h3 class="timeline-header border-0">'+dataset.account+' was linked</h3>';
 							html += '</div>';
 						html += '</div>';
 						layout.timeline.find('div.time-label[data-dateus="'+dateUS+'"]').after(html);
@@ -169,7 +169,7 @@ API.Plugins.conversations = {
 						layout.timeline.append(items);
 						element.find('i').first().addClass('pointer');
 						element.find('i').first().off().click(function(){
-							API.CRUD.read.show({ key:'id',keys:dataset, href:"?p=conversations&v=details&id="+dataset.name, modal:true });
+							API.CRUD.read.show({ key:'id',keys:dataset, href:"?p=conversations&v=details&id="+dataset.id, modal:true });
 						});
 						if(callback != null){ callback(element); }
 					}
