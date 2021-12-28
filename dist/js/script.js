@@ -80,78 +80,11 @@ API.Plugins.conversations = {
 							}
 							// Notes
 							if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
-								API.GUI.Layouts.details.tab(data,layout,{icon:"fas fa-sticky-note",text:API.Contents.Language["Notes"]},function(data,layout,tab,content){
-									layout.timeline.find('.time-label').first().find('div.btn-group').append('<button class="btn btn-secondary" data-table="notes">'+API.Contents.Language['Notes']+'</button>');
-									layout.content.notes = content;
-									layout.tabs.notes = tab;
-									if(API.Auth.validate('custom', 'conversations_notes', 2)){
-										content.append('<div><textarea title="Note" name="note" class="form-control"></textarea></div>');
-										content.find('textarea').summernote({
-											toolbar: [
-												['font', ['fontname', 'fontsize']],
-												['style', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
-												['color', ['color']],
-												['paragraph', ['style', 'ul', 'ol', 'paragraph', 'height']],
-											],
-											height: 250,
-										});
-										var html = '';
-										html += '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">';
-											html += '<form class="form-inline my-2 my-lg-0 ml-auto">';
-												html += '<button class="btn btn-warning my-2 my-sm-0" type="button" data-action="reply"><i class="fas fa-sticky-note mr-1"></i>'+API.Contents.Language['Add Note']+'</button>';
-											html += '</form>';
-										html += '</nav>';
-										content.append(html);
-									}
-								});
-								API.Plugins.conversations.Events.notes(data,layout);
+								API.Plugins.notes.Layouts.details.tab(data,layout);
 							}
 							// Contacts
 							if(API.Helper.isSet(API.Plugins,['contacts']) && API.Auth.validate('custom', 'conversations_contacts', 1)){
-								API.GUI.Layouts.details.tab(data,layout,{icon:"fas fa-address-book",text:API.Contents.Language["Contacts"]},function(data,layout,tab,content){
-									layout.timeline.find('.time-label').first().find('div.btn-group').append('<button class="btn btn-secondary" data-table="contacts">'+API.Contents.Language['Contacts']+'</button>');
-									layout.content.contacts = content;
-									layout.tabs.contacts = tab;
-									content.addClass('p-3');
-									var html = '';
-									html += '<div class="row">';
-										html += '<div class="col-md-12 mb-3">';
-											html += '<div class="input-group">';
-												html += '<input type="text" class="form-control">';
-												html += '<div class="input-group-append pointer" data-action="clear">';
-													html += '<span class="input-group-text"><i class="fas fa-times" aria-hidden="true"></i></span>';
-												html += '</div>';
-												html += '<div class="input-group-append">';
-													html += '<span class="input-group-text"><i class="icon icon-search mr-1"></i>'+API.Contents.Language["Search"]+'</span>';
-												html += '</div>';
-											html += '</div>';
-										html += '</div>';
-									html += '</div>';
-									html += '<div class="row"></div>';
-									content.append(html);
-									area = content.find('div.row').last();
-									if(API.Auth.validate('custom', 'conversations_contacts', 2)){
-										var html = '';
-										html += '<div class="col-sm-12 col-md-6">';
-											html += '<div class="card pointer addContact">';
-												html += '<div class="card-body py-4">';
-													html += '<div class="text-center p-5">';
-														html += '<i class="fas fa-plus-circle fa-10x mt-3 mb-2"></i>';
-													html += '</div>';
-												html += '</div>';
-											html += '</div>';
-										html += '</div>';
-										area.append(html);
-									}
-									if(API.Helper.isSet(data,['relations','contacts'])){
-										for(var [id, relation] of Object.entries(data.relations.contacts)){
-											if(relation.isActive||API.Auth.validate('custom', 'conversations_contacts_isActive', 1)){
-												API.Plugins.conversations.GUI.contact(relation,layout);
-											}
-										}
-									}
-								});
-								API.Plugins.conversations.Events.contacts(data,layout);
+								API.Plugins.contacts.Layouts.details.tab(data,layout);
 							}
 							// Created
 							options.field = "created";
