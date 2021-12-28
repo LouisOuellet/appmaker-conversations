@@ -156,7 +156,7 @@ API.Plugins.conversations = {
 							html += '<i class="fas fa-'+defaults.icon+' bg-'+defaults.color+'"></i>';
 							html += '<div class="timeline-item">';
 								html += '<span class="time"><i class="fas fa-clock mr-2"></i><time class="timeago" datetime="'+dataset.created.replace(/ /g, "T")+'">'+dataset.created+'</time></span>';
-								html += '<h3 class="timeline-header border-0">'+dataset.account+' was linked</h3>';
+								html += '<h3 class="timeline-header border-0">['+dataset.account+'] Conversation '+dataset.id+' was linked</h3>';
 							html += '</div>';
 						html += '</div>';
 						layout.timeline.find('div.time-label[data-dateus="'+dateUS+'"]').after(html);
