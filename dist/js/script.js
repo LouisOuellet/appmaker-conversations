@@ -57,7 +57,7 @@ API.Plugins.conversations = {
 							var today = new Date();
 							API.Builder.Timeline.add.date(layout.timeline,today);
 							layout.timeline.find('.time-label').first().html('<div class="btn-group"></div>');
-							layout.timeline.find('.time-label').first().find('div.btn-group').append('<button class="btn btn-primary" data-table="all">'+API.Contents.Language['All']+'</button>');
+							layout.timeline.find('.time-label').first().find('div.btn-group').append('<button class="btn btn-primary" data-trigger="all">'+API.Contents.Language['All']+'</button>');
 							var options = {plugin:"conversations"}
 							// Debug
 							if(API.debug){
@@ -229,13 +229,19 @@ API.Plugins.conversations = {
 							layout.timeline.find('.time-label').first().find('div.btn-group button').off().click(function(){
 								var filters = layout.timeline.find('.time-label').first().find('div.btn-group');
 								var all = filters.find('button').first();
-								if($(this).attr('data-trigger') != 'all'){
+								var filter = $(this);
+								var trigger = filter.attr('data-trigger');
+								console.log(filters);
+								console.log(all);
+								console.log(filter);
+								console.log(trigger);
+								if(trigger != 'all'){
 									if(all.hasClass("btn-primary")){ all.removeClass('btn-primary').addClass('btn-secondary'); }
-									if($(this).hasClass("btn-secondary")){ $(this).removeClass('btn-secondary').addClass('btn-primary'); }
-									else { $(this).removeClass('btn-primary').addClass('btn-secondary'); }
+									if(filter.hasClass("btn-secondary")){ filter.removeClass('btn-secondary').addClass('btn-primary'); }
+									else { filter.removeClass('btn-primary').addClass('btn-secondary'); }
 									layout.timeline.find('[data-plugin]').hide();
 									layout.timeline.find('.time-label').first().find('div.btn-group button.btn-primary').each(function(){
-										layout.timeline.find('[data-plugin="'+$(this).attr('data-trigger')+'"]').show();
+										layout.timeline.find('[data-plugin="'+trigger+'"]').show();
 									});
 								} else {
 									filters.find('button').removeClass('btn-primary').addClass('btn-secondary');
