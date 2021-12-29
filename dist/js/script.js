@@ -82,6 +82,10 @@ API.Plugins.conversations = {
 							if(API.Helper.isSet(API.Plugins,['statuses']) && API.Auth.validate('custom', 'conversations_statuses', 1)){
 								API.Plugins.statuses.Layouts.details.detail(data,layout);
 							}
+							// Organizations
+							if(API.Helper.isSet(API.Plugins,['organizations']) && API.Auth.validate('custom', 'conversations_organizations', 1)){
+								API.Plugins.organizations.Layouts.details.detail(data,layout);
+							}
 							// Notes
 							if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
 								API.Plugins.notes.Layouts.details.tab(data,layout);
