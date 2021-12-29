@@ -229,12 +229,12 @@ class conversationsAPI extends CRUDAPI {
       );
       $dump = $query->dump();
 			$conversation['id'] = $dump['insert_id'];
-      set_time_limit(20);
     } else {
       $query = $this->Auth->query('UPDATE `conversations` SET
         `modified` = ?,
         `updated_by` = ?,
         `account` = ?,
+        `status` = ?,
         `messages` = ?,
         `files` = ?,
         `organizations` = ?,
@@ -245,6 +245,7 @@ class conversationsAPI extends CRUDAPI {
         $conversation["modified"],
         $conversation["updated_by"],
         $conversation["account"],
+        $conversation["status"],
         $conversation["messages"],
         $conversation["files"],
         $conversation["organizations"],
@@ -253,9 +254,18 @@ class conversationsAPI extends CRUDAPI {
         $conversation["hasNew"],
         $conversation["id"]
       ]);
-      set_time_limit(20);
       $dump = $query->dump();
     }
+		set_time_limit(20);
+		$status = $this->Auth->query('SELECT * FROM `statuses` WHERE `relationship` = ? AND `order` = ?','conversations',$conversation['status'])->fetchAll()->all();
+		if(!empty($status)){
+			$this->createRelationship([
+				'relationship_1' => 'conversations',
+				'link_to_1' => $conversation['id'],
+				'relationship_2' => 'statuses',
+				'link_to_2' => $status[0]['id'],
+			]);
+		}
 		foreach(explode(';',trim($conversation['messages'],';')) as $mid){
 			$message = $this->Auth->Read('messages',$mid,'mid');
 			if($message != null){
