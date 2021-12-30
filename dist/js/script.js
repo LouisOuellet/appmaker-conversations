@@ -99,7 +99,6 @@ API.Plugins.conversations = {
 							// Files
 							if(API.Helper.isSet(API.Plugins,['files']) && API.Auth.validate('custom', 'conversations_files', 1)){
 								API.Plugins.files.Layouts.details.tab(data,layout);
-								API.Plugins.files.Layouts.details.detail(data,layout);
 							}
 							// Created
 							options.field = "created";
