@@ -302,12 +302,6 @@ class conversationsAPI extends CRUDAPI {
 		foreach(json_decode($conversation['meta'], true) as $meta){
 			$meta = explode(":",$meta);
 			switch($meta[0]){
-				case"TR":
-					if(isset($this->Settings['plugins']['b3']['status']) && $this->Settings['plugins']['b3']['status']){
-						require_once dirname(__FILE__,3).'/plugins/b3/api.php';
-						$B3 = new b3API();
-						$B3->saveB3from('conversations',$conversation);
-					}
 				default: break;
 			}
 		}
