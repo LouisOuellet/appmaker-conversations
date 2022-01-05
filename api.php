@@ -229,6 +229,7 @@ class conversationsAPI extends CRUDAPI {
       );
       $dump = $query->dump();
 			$conversation['id'] = $dump['insert_id'];
+			if(isset($this->Settings['debug']) && $this->Settings['debug']){ echo "[".$conversation['id']."]Conversation created\n"; }
     } else {
       $query = $this->Auth->query('UPDATE `conversations` SET
         `modified` = ?,
@@ -255,6 +256,7 @@ class conversationsAPI extends CRUDAPI {
         $conversation["id"]
       ]);
       $dump = $query->dump();
+			if(isset($this->Settings['debug']) && $this->Settings['debug']){ echo "[".$conversation['id']."]Conversation updated\n"; }
     }
 		set_time_limit(20);
 		$status = $this->Auth->query('SELECT * FROM `statuses` WHERE `relationship` = ? AND `order` = ?','conversations',$conversation['status'])->fetchAll()->all();
