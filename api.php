@@ -16,6 +16,105 @@ class conversationsAPI extends CRUDAPI {
 		}
 	}
 
+	public function merge($request = null, $data = null){
+		if(isset($data)){
+			if(!is_array($data)){ $data = json_decode($data, true); }
+			if(isset($data['id'])){
+				$conversations = $this->Auth->query('SELECT * FROM `conversations` WHERE `id` = ?',$data['id'])->fetchAll()->all();
+		    if(!empty($conversations)){
+					$conversation = $conversations[0];
+					if(isset($data['conversation'])){
+						$conversations = $this->Auth->query('SELECT * FROM `conversations` WHERE `id` = ?',$data['conversation'])->fetchAll()->all();
+						if(!empty($conversations)){
+							$merge = $conversations[0];
+							$this->copyRelationships('conversations',$merge['id'],'conversations',$conversation['id']);
+							$conversation['status'] = 2;
+							$this->Auth->update('conversations',$conversation,$conversation['id']);
+							// Return
+							$return = [
+								"success" => $this->Language->Field["Conversation merged"],
+								"request" => $request,
+								"data" => $data,
+								"output" => [
+									'this' => $conversation,
+								],
+							];
+						} else {
+							// Return
+							$return = [
+								"error" => $this->Language->Field["Unable to find the conversation to merge"],
+								"request" => $request,
+								"data" => $data,
+							];
+						}
+					} else {
+						// Return
+						$return = [
+							"error" => $this->Language->Field["No conversation provided"],
+							"request" => $request,
+							"data" => $data,
+						];
+					}
+				} else {
+					// Return
+					$return = [
+						"error" => $this->Language->Field["Unable to find the conversation"],
+						"request" => $request,
+						"data" => $data,
+					];
+				}
+			}
+		} else {
+			// Return
+			$return = [
+				"error" => $this->Language->Field["Unable to complete the request"],
+				"request" => $request,
+				"data" => $data,
+			];
+		}
+		// Return
+		return $return;
+	}
+
+	public function close($request = null, $data = null){
+		if(isset($data)){
+			if(!is_array($data)){ $data = json_decode($data, true); }
+			if(isset($data['id'])){
+				$conversations = $this->Auth->query('SELECT * FROM `conversations` WHERE `id` = ?',$data['id'])->fetchAll()->all();
+		    if(!empty($conversations)){
+					$conversation = $conversations[0];
+					$conversation['status'] = 3;
+					$this->Auth->update('conversations',$conversation,$conversation['id']);
+					// Return
+					$return = [
+						"success" => $this->Language->Field["Conversation closed"],
+						"request" => $request,
+						"data" => $data,
+						"output" => [
+							'this' => $conversation,
+						],
+					];
+				} else {
+					// Return
+					$return = [
+						"error" => $this->Language->Field["Unable to find the conversation"],
+						"request" => $request,
+						"data" => $data,
+					];
+				}
+			}
+		} else {
+			// Return
+			$return = [
+				"error" => $this->Language->Field["Unable to complete the request"],
+				"request" => $request,
+				"data" => $data,
+			];
+		}
+		// Return
+		return $return;
+	}
+
 	public function buildConversations(){
     $messages = $this->Auth->query('SELECT * FROM `messages` WHERE `isAttached` <> ? OR `isAttached` IS NULL','true')->fetchAll()->all();
     if(!empty($messages)){

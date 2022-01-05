@@ -10,5 +10,11 @@
 		"Isclosed": "Closed",
 		"Hasnew": "Hasnew",
 		"Conversation Details": "Conversation Details",
-		"Merge": "Merge"
+		"Merge": "Merge",
+		"Unable to find the conversation": "Unable to find the conversation",
+		"Conversation merged": "Conversation merged",
+		"Conversation closed": "Conversation closed",
+		"No conversation provided": "No conversation provided",
+		"Unable to find the conversation to merge": "Unable to find the conversation to merge",
+		"Are you sure you want to close this conversation?": "Are you sure you want to close this conversation?"
 }

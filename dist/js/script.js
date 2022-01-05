@@ -166,6 +166,66 @@ API.Plugins.conversations = {
 			});
 		},
 	},
+	merge:function(data,layout){
+		API.Builder.modal($('body'), {
+			title:'Are you sure?',
+			icon:'close',
+			zindex:'top',
+			css:{ header: "bg-primary", body: "p-3"},
+		}, function(modal){
+			modal.on('hide.bs.modal',function(){ modal.remove(); });
+			var dialog = modal.find('.modal-dialog');
+			var header = modal.find('.modal-header');
+			var body = modal.find('.modal-body');
+			var footer = modal.find('.modal-footer');
+			header.find('button[data-control="hide"]').remove();
+			header.find('button[data-control="update"]').remove();
+			// body.html(API.Contents.Language['Are you sure you want to close this conversation?']);
+			footer.append('<button class="btn btn-primary" data-action="merge"><i class="fas fa-mail-bulk mr-1"></i>'+API.Contents.Language['Merge']+'</button>');
+			footer.find('button[data-action="merge"]').off().click(function(){
+				// API.request('conversations','merge',{data:{id:data.this.raw.id,conversation:conversation}},function(result){
+				// 	var dataset = JSON.parse(result);
+				// 	if(dataset.success != undefined){
+				// 		data.this.raw.status = 2;
+				// 		data.this.dom.status = 2;
+				// 		API.Plugins.statuses.update(data,layout);
+				// 	}
+				// });
+				modal.modal('hide');
+			});
+			modal.modal('show');
+		});
+	},
+	close:function(data,layout){
+		API.Builder.modal($('body'), {
+			title:'Are you sure?',
+			icon:'close',
+			zindex:'top',
+			css:{ header: "bg-danger", body: "p-3"},
+		}, function(modal){
+			modal.on('hide.bs.modal',function(){ modal.remove(); });
+			var dialog = modal.find('.modal-dialog');
+			var header = modal.find('.modal-header');
+			var body = modal.find('.modal-body');
+			var footer = modal.find('.modal-footer');
+			header.find('button[data-control="hide"]').remove();
+			header.find('button[data-control="update"]').remove();
+			body.html(API.Contents.Language['Are you sure you want to close this conversation?']);
+			footer.append('<button class="btn btn-danger" data-action="close"><i class="fas fa-envelope mr-1"></i>'+API.Contents.Language['Close']+'</button>');
+			footer.find('button[data-action="close"]').off().click(function(){
+				API.request('conversations','close',{data:{id:data.this.raw.id}},function(result){
+					var dataset = JSON.parse(result);
+					if(dataset.success != undefined){
+						data.this.raw.status = 3;
+						data.this.dom.status = 3;
+						API.Plugins.statuses.update(data,layout);
+					}
+				});
+				modal.modal('hide');
+			});
+			modal.modal('show');
+		});
+	},
 	Timeline:{
 		icon:"comments",
 		object:function(dataset,layout,options = {},callback = null){
