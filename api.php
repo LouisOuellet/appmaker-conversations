@@ -217,9 +217,7 @@ class conversationsAPI extends CRUDAPI {
 							$file = $this->Auth->read('files',$file);
 							if($file != null){
 								$file = $file->all()[0];
-								if(!in_array($file['type'],$this->Blacklist)){
-									array_push($conversation['files'],$file['id']);
-								}
+								array_push($conversation['files'],$file['id']);
 							}
 						}
 					}

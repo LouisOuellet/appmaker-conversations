@@ -6438,17 +6438,17 @@
         {
             "id": 100429,
             "created": "2022-01-05 12:30:47",
-            "modified": "2022-01-05 12:40:13",
+            "modified": "2022-01-05 16:37:18",
             "owner": "1",
             "updated_by": "1",
             "account": "customs@albcie.com",
             "status": 1,
-            "messages": "202112291540.1BTFe3eE076890@itmapp09.prd.dsg-internal",
-            "files": "100724",
+            "messages": "202112291540.1BTFe3eE076890@itmapp09.prd.dsg-internal;202201052130.205LUaj9026350@itmapp09.prd.dsg-internal",
+            "files": "100724;102209;102210;102211;102212;102213",
             "organizations": "1",
-            "contacts": "pars@albcustoms.com;create@albcie.com",
+            "contacts": "pars@albcustoms.com;create@albcie.com;release@albcustoms.com;release@albcie.com",
             "meta": "[\n    \"OTHER:INGLAS2205\",\n    \"TR:10013000776286\",\n    \"OTHER:9529PRG211107524\",\n    \"CN:HLBU1371530\",\n    \"OTHER:OLZ211703465\"\n]",
-            "hasNew": ""
+            "hasNew": "true"
         },
         {
             "id": 100430,
@@ -14853,7 +14853,7 @@
         {
             "id": 100990,
             "created": "2022-01-05 16:29:12",
-            "modified": "2022-01-05 16:29:12",
+            "modified": "2022-01-05 16:30:15",
             "owner": "1",
             "updated_by": "1",
             "account": "customs@albcie.com",
@@ -14863,12 +14863,12 @@
             "organizations": "1",
             "contacts": "pars@albcustoms.com;release@albcustoms.com;release@albcie.com",
             "meta": "[\n    \"TR:11111000202385\",\n    \"OTHER:CREA4664\",\n    \"OTHER:400-545370584982\"\n]",
-            "hasNew": "true"
+            "hasNew": ""
         },
         {
             "id": 100991,
             "created": "2022-01-05 16:29:13",
-            "modified": "2022-01-05 16:29:13",
+            "modified": "2022-01-05 16:30:16",
             "owner": "1",
             "updated_by": "1",
             "account": "customs@albcie.com",
@@ -14878,6 +14878,21 @@
             "organizations": "1",
             "contacts": "pars@albcustoms.com;release@albcustoms.com;release@albcie.com",
             "meta": "[\n    \"TR:11111000202396\",\n    \"OTHER:CREA4664\",\n    \"OTHER:400-545370585100\"\n]",
+            "hasNew": ""
+        },
+        {
+            "id": 100992,
+            "created": "2022-01-05 16:37:19",
+            "modified": "2022-01-05 16:37:19",
+            "owner": "1",
+            "updated_by": "1",
+            "account": "customs@albcie.com",
+            "status": 1,
+            "messages": "202201052130.205LUeHT026559@itmapp09.prd.dsg-internal",
+            "files": "102214",
+            "organizations": "1",
+            "contacts": "pars@albcustoms.com;release@albcustoms.com;release@albcie.com",
+            "meta": "[\n    \"TR:10013000778518\",\n    \"OTHER:EAGLE0521\",\n    \"CCN:18BBPARS000990\",\n    \"OTHER:27430\"\n]",
             "hasNew": "true"
         }
     ]
