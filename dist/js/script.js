@@ -78,6 +78,22 @@ API.Plugins.conversations = {
 									});
 								});
 							}
+							// Merge
+							if(API.Auth.validate('custom', 'conversations_merge', 1)){
+								API.GUI.Layouts.details.control(data,layout,{color:"primary",icon:"fas fa-mail-bulk",text:API.Contents.Language["Merge"]},function(data,layout,button){
+									button.off().click(function(){
+										API.Plugins.conversations.merge(data,layout);
+									});
+								});
+							}
+							// Close
+							if(API.Auth.validate('custom', 'conversations_close', 1)){
+								API.GUI.Layouts.details.control(data,layout,{color:"danger",icon:"fas fa-envelope",text:API.Contents.Language["Close"]},function(data,layout,button){
+									button.off().click(function(){
+										API.Plugins.conversations.close(data,layout);
+									});
+								});
+							}
 							// ID
 							API.GUI.Layouts.details.data(data,layout,{field:"id"});
 							// Status
