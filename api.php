@@ -1,13 +1,22 @@
 <?php
 class conversationsAPI extends CRUDAPI {
 
-	protected $Blacklist = ['png','jpg'];
+	public function read($request = null, $data = null){
+		if(isset($data)){
+			if(!is_array($data)){ $data = json_decode($data, true); }
+			$this->Auth->setLimit(0);
+			// Load Conversation
+			$conversations = parent::read('conversations', $data);
+			// Return
+			return $conversations;
+		}
+	}
 
 	public function get($request = null, $data = null){
 		if(isset($data)){
 			if(!is_array($data)){ $data = json_decode($data, true); }
 			$this->Auth->setLimit(0);
-			// Load Event
+			// Load Conversation
 			$get = parent::get('conversations', $data);
 			// Build Relations
 			$get = $this->buildRelations($get);
