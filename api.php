@@ -38,6 +38,15 @@ class conversationsAPI extends CRUDAPI {
 							$merge = $conversations[0];
 							$this->copyRelationships('conversations',$merge['id'],'conversations',$conversation['id']);
 							$conversation['status'] = 2;
+							$status = $this->Auth->query('SELECT * FROM `statuses` WHERE `relationship` = ? AND `order` = ?','conversations',$conversation['status'])->fetchAll()->all();
+							if(!empty($status)){
+								$this->createRelationship([
+									'relationship_1' => 'conversations',
+									'link_to_1' => $conversation['id'],
+									'relationship_2' => 'statuses',
+									'link_to_2' => $status[0]['id'],
+								],true);
+							}
 							$this->Auth->update('conversations',$conversation,$conversation['id']);
 							// Return
 							$return = [
@@ -93,6 +102,15 @@ class conversationsAPI extends CRUDAPI {
 		    if(!empty($conversations)){
 					$conversation = $conversations[0];
 					$conversation['status'] = 3;
+					$status = $this->Auth->query('SELECT * FROM `statuses` WHERE `relationship` = ? AND `order` = ?','conversations',$conversation['status'])->fetchAll()->all();
+					if(!empty($status)){
+						$this->createRelationship([
+							'relationship_1' => 'conversations',
+							'link_to_1' => $conversation['id'],
+							'relationship_2' => 'statuses',
+							'link_to_2' => $status[0]['id'],
+						],true);
+					}
 					$this->Auth->update('conversations',$conversation,$conversation['id']);
 					// Return
 					$return = [
