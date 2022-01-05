@@ -5,7 +5,7 @@ class conversationsAPI extends CRUDAPI {
 		if(isset($data)){
 			if(!is_array($data)){ $data = json_decode($data, true); }
 			$this->Auth->setLimit(0);
-			// Load Conversation
+			// Load Conversations
 			$conversations = parent::read('conversations', $data);
 			// Return
 			return $conversations;
