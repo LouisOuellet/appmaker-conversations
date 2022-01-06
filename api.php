@@ -61,7 +61,7 @@ class conversationsAPI extends CRUDAPI {
 								"data" => $data,
 								"output" => [
 									'this' => $conversation,
-									'get' => $this->get('conversations', ['id' => $merge['id']]),
+									'get' => $this->get('conversations', ['id' => $conversation['id']]),
 								],
 							];
 						} else {
