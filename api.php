@@ -37,17 +37,23 @@ class conversationsAPI extends CRUDAPI {
 						if(!empty($conversations)){
 							$merge = $conversations[0];
 							$this->copyRelationships('conversations',$merge['id'],'conversations',$conversation['id']);
-							$conversation['status'] = 2;
+							$merge['status'] = 2;
 							$status = $this->Auth->query('SELECT * FROM `statuses` WHERE `relationship` = ? AND `order` = ?','conversations',$conversation['status'])->fetchAll()->all();
 							if(!empty($status)){
 								$this->createRelationship([
 									'relationship_1' => 'conversations',
-									'link_to_1' => $conversation['id'],
+									'link_to_1' => $merge['id'],
 									'relationship_2' => 'statuses',
 									'link_to_2' => $status[0]['id'],
 								],true);
 							}
-							$this->Auth->update('conversations',$conversation,$conversation['id']);
+							$this->createRelationship([
+								'relationship_1' => 'conversations',
+								'link_to_1' => $merge['id'],
+								'relationship_2' => 'conversations',
+								'link_to_2' => $conversation['id'],
+							],true);
+							$this->Auth->update('conversations',$merge,$merge['id']);
 							// Return
 							$return = [
 								"success" => $this->Language->Field["Conversation merged"],
