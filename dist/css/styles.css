@@ -1,3 +1,6 @@
 .icon-conversations::before{
 	content: "\f086";
 }
+.icon-merging::before{
+	content: "\f674";
+}

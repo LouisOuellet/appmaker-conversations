@@ -168,8 +168,8 @@ API.Plugins.conversations = {
 	},
 	merge:function(data,layout){
 		API.Builder.modal($('body'), {
-			title:'Are you sure?',
-			icon:'close',
+			title:'Type the conversation ID to be merged:',
+			icon:'merging',
 			zindex:'top',
 			css:{ header: "bg-primary", body: "p-3"},
 		}, function(modal){
@@ -180,6 +180,7 @@ API.Plugins.conversations = {
 			var footer = modal.find('.modal-footer');
 			header.find('button[data-control="hide"]').remove();
 			header.find('button[data-control="update"]').remove();
+			API.Builder.input(body, 'id', null,{plugin:'conversations',type:'input'}, function(input){});
 			// body.html(API.Contents.Language['Are you sure you want to close this conversation?']);
 			footer.append('<button class="btn btn-primary" data-action="merge"><i class="fas fa-mail-bulk mr-1"></i>'+API.Contents.Language['Merge']+'</button>');
 			footer.find('button[data-action="merge"]').off().click(function(){

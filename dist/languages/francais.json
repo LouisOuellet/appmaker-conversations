@@ -17,5 +17,6 @@
 		"No conversation provided": "No conversation provided",
 		"Unable to find the conversation to merge": "Unable to find the conversation to merge",
 		"Are you sure you want to close this conversation?": "Are you sure you want to close this conversation?",
-		"Merged": "Merged"
+		"Merged": "Merged",
+		"Type the conversation ID to be merged:": "Type the conversation ID to be merged:"
 }
