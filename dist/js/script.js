@@ -187,6 +187,7 @@ API.Plugins.conversations = {
 				API.request('conversations','merge',{data:{id:data.this.raw.id,conversation:body.find('input').val()}},function(result){
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
+						API.Builder.Timeline.render(dataset.output.get.output,layout,{prefix:"conversations_"});
 						console.log(dataset.output);
 					}
 				});
