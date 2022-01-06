@@ -54,6 +54,8 @@ class conversationsAPI extends CRUDAPI {
 								'link_to_2' => $conversation['id'],
 							],true);
 							$this->Auth->update('conversations',$merge,$merge['id']);
+							$conversation['meta'] = json_encode(array_unique(array_merge(json_decode($conversation['meta'], true),json_decode($merge['meta'], true)), SORT_REGULAR), JSON_PRETTY_PRINT);
+							$this->Auth->update('conversations',$conversation,$conversation['id']);
 							// Return
 							$return = [
 								"success" => $this->Language->Field["Conversation merged"],
