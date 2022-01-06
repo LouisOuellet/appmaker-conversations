@@ -187,8 +187,24 @@ API.Plugins.conversations = {
 				API.request('conversations','merge',{data:{id:data.this.raw.id,conversation:body.find('input').val()}},function(result){
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
+						// Organizations
+						if(API.Helper.isSet(API.Plugins,['organizations']) && API.Auth.validate('custom', 'conversations_organizations', 1)){
+							API.Plugins.organizations.Layouts.details.detail(dataset.output.get.output,layout);
+						}
+						// Notes
+						if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
+							API.Plugins.notes.Layouts.details.tab(dataset.output.get.output,layout);
+						}
+						// Contacts
+						if(API.Helper.isSet(API.Plugins,['contacts']) && API.Auth.validate('custom', 'conversations_contacts', 1)){
+							API.Plugins.contacts.Layouts.details.tab(dataset.output.get.output,layout);
+						}
+						// Files
+						if(API.Helper.isSet(API.Plugins,['files']) && API.Auth.validate('custom', 'conversations_files', 1)){
+							API.Plugins.files.Layouts.details.tab(dataset.output.get.output,layout);
+						}
+						// Timeline
 						API.Builder.Timeline.render(dataset.output.get.output,layout,{prefix:"conversations_"});
-						console.log(dataset.output);
 					}
 				});
 				modal.modal('hide');
