@@ -184,14 +184,12 @@ API.Plugins.conversations = {
 			// body.html(API.Contents.Language['Are you sure you want to close this conversation?']);
 			footer.append('<button class="btn btn-primary" data-action="merge"><i class="fas fa-mail-bulk mr-1"></i>'+API.Contents.Language['Merge']+'</button>');
 			footer.find('button[data-action="merge"]').off().click(function(){
-				// API.request('conversations','merge',{data:{id:data.this.raw.id,conversation:conversation}},function(result){
-				// 	var dataset = JSON.parse(result);
-				// 	if(dataset.success != undefined){
-				// 		data.this.raw.status = 2;
-				// 		data.this.dom.status = 2;
-				// 		API.Plugins.statuses.update(data,layout);
-				// 	}
-				// });
+				API.request('conversations','merge',{data:{id:data.this.raw.id,conversation:conversation}},function(result){
+					var dataset = JSON.parse(result);
+					if(dataset.success != undefined){
+						console.log(dataset.output);
+					}
+				});
 				modal.modal('hide');
 			});
 			modal.modal('show');
