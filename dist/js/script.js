@@ -104,6 +104,10 @@ API.Plugins.conversations = {
 							if(API.Helper.isSet(API.Plugins,['organizations']) && API.Auth.validate('custom', 'conversations_organizations', 1)){
 								API.Plugins.organizations.Layouts.details.detail(data,layout);
 							}
+							// Tags
+							if(API.Helper.isSet(API.Plugins,['tags']) && API.Auth.validate('custom', 'conversations_tags', 1)){
+								API.Plugins.tags.Layouts.details.detail(data,layout);
+							}
 							// Notes
 							if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
 								API.Plugins.notes.Layouts.details.tab(data,layout);
@@ -190,6 +194,10 @@ API.Plugins.conversations = {
 						// Organizations
 						if(API.Helper.isSet(API.Plugins,['organizations']) && API.Auth.validate('custom', 'conversations_organizations', 1)){
 							API.Plugins.organizations.Layouts.details.detail(dataset.output.get.output,layout);
+						}
+						// Tags
+						if(API.Helper.isSet(API.Plugins,['tags']) && API.Auth.validate('custom', 'conversations_tags', 1)){
+							API.Plugins.tags.Layouts.details.detail(dataset.output.get.output,layout);
 						}
 						// Notes
 						if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
