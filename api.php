@@ -301,7 +301,7 @@ class conversationsAPI extends CRUDAPI {
   protected function parseReference($string){
 		// Sanitize reference
 		$reference = $string;
-    $replace = ['---','--','CID:','CNTR-','PARS-','UTF-8','CCN:','CCN#','PKG#','WEIGHT#','CN:','CN#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
+    $replace = ['CNTR-','PARS-','CCN:','CCN#','PKG#','WEIGHT#','CN:','CN#','TR#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','---','--','CID:','UTF-8','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
     foreach($replace as $str1){ $reference = str_replace($str1,'',strtoupper($reference)); }
 		// Return based on string
 		if(substr($string, 0, 5) == "CNTR-" || substr($string, 0, 3) == "CN:" || substr($string, 0, 3) == "CN#"){
