@@ -13,6 +13,7 @@ API.Plugins.conversations = {
 						for(const [key, value] of Object.entries(dataset.output.dom)){ API.Helper.set(API.Contents,['data','dom','conversations',value.id],value); }
 						for(const [key, value] of Object.entries(dataset.output.raw)){ API.Helper.set(API.Contents,['data','raw','conversations',value.id],value); }
 						API.Builder.table(card.children('.card-body'), dataset.output.dom, {
+							headers:['id','account','status','messages','files','organizations','contacts','references'],
 							headers:dataset.output.headers,
 							id:'conversationsIndex',
 							modal:true,
