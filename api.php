@@ -301,32 +301,47 @@ class conversationsAPI extends CRUDAPI {
   protected function parseReference($string){
 		// Sanitize reference
 		$reference = $string;
-    $replace = ['CNTR-','PARS-','CCN:','CCN#','PKG#','WEIGHT#','CLIENT#','CN:','CN#','TR#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','---','--','CID:','UTF-8','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','!','?','@','$','%','^','&','*','\\','/','|'];
+    $replace = ['CNTR-','PARS-','CCN:','VENDOR#','BILLING#','CROSSING#','LOCATION#','SBNR#','CCN#','PKG#','WEIGHT#','CLIENT#','CN:','CN#','TR#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','---','--','CID:','UTF-8','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','!','?','@','$','%','^','&','*','\\','/','|'];
     foreach($replace as $str1){ $reference = str_replace($str1,'',strtoupper($reference)); }
 		// Return based on string
 		if(substr($string, 0, 5) == "CNTR-" || substr($string, 0, 3) == "CN:" || substr($string, 0, 3) == "CN#"){
-			return "CN:".strtoupper($reference);
+			if($reference != ''){ return "CN:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 5) == "PARS-" || substr($string, 0, 4) == "CCN:" || substr($string, 0, 4) == "CCN#"){
-			return "CCN:".strtoupper($reference);
+			if($reference != ''){ return "CCN:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 3) == "PO-" || substr($string, 0, 3) == "PO:" || substr($string, 0, 3) == "PO#"){
-			return "PO:".strtoupper($reference);
+			if($reference != ''){ return "PO:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 4) == "MWB:" || substr($string, 0, 4) == "MWB#"){
-			return "MWB:".strtoupper($reference);
+			if($reference != ''){ return "MWB:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 4) == "INV-" || substr($string, 0, 4) == "INV:" || substr($string, 0, 4) == "INV#"){
-			return "INV:".strtoupper($reference);
+			if($reference != ''){ return "INV:".strtoupper($reference); }
+		}
+		if(substr($string, 0, 4) == "VENDOR#"){
+			if($reference != ''){ return "VENDOR:".strtoupper($reference); }
+		}
+		if(substr($string, 0, 4) == "BILLING#"){
+			if($reference != ''){ return "BILLING:".strtoupper($reference); }
+		}
+		if(substr($string, 0, 4) == "CROSSING#"){
+			if($reference != ''){ return "CROSSING:".strtoupper($reference); }
+		}
+		if(substr($string, 0, 4) == "LOCATION#"){
+			if($reference != ''){ return "LOCATION:".strtoupper($reference); }
+		}
+		if(substr($string, 0, 4) == "SBNR#"){
+			if($reference != ''){ return "SBNR:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 4) == "PKG#"){
-			return "PKG:".strtoupper($reference);
+			if($reference != ''){ return "PKG:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 7) == "CLIENT#"){
-			return "CLIENT:".strtoupper($reference);
+			if($reference != ''){ return "CLIENT:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 7) == "WEIGHT#"){
-			return "WEIGHT:".strtoupper($reference);
+			if($reference != ''){ return "WEIGHT:".strtoupper($reference); }
 		}
 		// Return based on reference
 		if(strlen(str_replace('-','',$reference))==14 && preg_match('/^[0-9]+$/', str_replace('-','',$reference))){
