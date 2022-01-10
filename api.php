@@ -299,38 +299,56 @@ class conversationsAPI extends CRUDAPI {
   }
 
   protected function parseReference($string){
+		// Sanitize reference
     $replace = ['---','--','CID:','CNTR-','PARS-','UTF-8','CCN:','CCN#','CN:','CN#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
-    foreach($replace as $str1){ $string = str_replace($str1,'',strtoupper($string)); }
-		if(strlen(str_replace('-','',$string))==14 && preg_match('/^[0-9]+$/', str_replace('-','',$string))){
-			$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeHVS` LIKE ? OR `setCodeLVS` LIKE ?',(substr(str_replace('-','',$string), 0, 5)),(substr(str_replace('-','',$string), 0, 5)))->fetchAll()->all();
-			if(!empty($organization)){ return "TR:".strtoupper(str_replace('-','',$string)); }
+    foreach($replace as $str1){ $reference = str_replace($str1,'',strtoupper($string)); }
+		// Return based on string
+		if(substr($string, 0, 5) == "CNTR-" || substr($string, 0, 3) == "CN:" || substr($string, 0, 3) == "CN#"){
+			return "CN:".strtoupper($reference);
 		}
-		if(strlen($string)>=10){
-	    $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeCCN` LIKE ?',substr($string, 0, 4))->fetchAll()->all();
-	    if(!empty($organization) || strtoupper(substr($string, 4, 4)) == "PARS"){ return "CCN:".strtoupper($string); }
+		if(substr($string, 0, 5) == "PARS-" || substr($string, 0, 4) == "CCN:" || substr($string, 0, 4) == "CCN#"){
+			return "CCN:".strtoupper($reference);
 		}
-    if(strlen($string)>=10 && strlen($string)<=11 && preg_match('/^[A-Z,a-z]+$/', substr($string, 0, 4)) && preg_match('/^[0-9]+$/', substr($string, 4))){
-      return "CN:".strtoupper($string);
+		if(substr($string, 0, 3) == "PO-" || substr($string, 0, 3) == "PO:" || substr($string, 0, 3) == "PO#"){
+			return "PO:".strtoupper($reference);
+		}
+		if(substr($string, 0, 4) == "MWB:" || substr($string, 0, 4) == "MWB#"){
+			return "MWB:".strtoupper($reference);
+		}
+		if(substr($string, 0, 4) == "INV-" || substr($string, 0, 4) == "INV:" || substr($string, 0, 4) == "INV#"){
+			return "INV:".strtoupper($reference);
+		}
+		// Return based on reference
+		if(strlen(str_replace('-','',$reference))==14 && preg_match('/^[0-9]+$/', str_replace('-','',$reference))){
+			$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeHVS` LIKE ? OR `setCodeLVS` LIKE ?',(substr(str_replace('-','',$reference), 0, 5)),(substr(str_replace('-','',$reference), 0, 5)))->fetchAll()->all();
+			if(!empty($organization)){ return "TR:".strtoupper(str_replace('-','',$reference)); }
+		}
+		if(strlen($reference)>=10){
+	    $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeCCN` LIKE ?',substr($reference, 0, 4))->fetchAll()->all();
+	    if(!empty($organization) || strtoupper(substr($reference, 4, 4)) == "PARS"){ return "CCN:".strtoupper($reference); }
+		}
+    if(strlen($reference)>=10 && strlen($reference)<=11 && preg_match('/^[A-Z,a-z]+$/', substr($reference, 0, 4)) && preg_match('/^[0-9]+$/', substr($reference, 4))){
+      return "CN:".strtoupper($reference);
     }
-		$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeITMR4` = ?',$string)->fetchAll()->all();
+		$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeITMR4` = ?',$reference)->fetchAll()->all();
 		if(!empty($organization)){
 			if(isset($organization[0]['isClient']) && $organization[0]['isClient'] == "true"){
-				return "CLIENT:".strtoupper($string);
+				return "CLIENT:".strtoupper($reference);
 			}
 			if(isset($organization[0]['isVendor']) && $organization[0]['isVendor'] == "true"){
-				return "VENDOR:".strtoupper($string);
+				return "VENDOR:".strtoupper($reference);
 			}
 			if(isset($organization[0]['isFreightForwarder']) && $organization[0]['isFreightForwarder'] == "true"){
-				return "FREIGHTFORWARDER:".strtoupper($string);
+				return "FREIGHTFORWARDER:".strtoupper($reference);
 			}
 			if(isset($organization[0]['isCarrier']) && $organization[0]['isCarrier'] == "true"){
-				return "CARRIER:".strtoupper($string);
+				return "CARRIER:".strtoupper($reference);
 			}
 			if(isset($organization[0]['isBroker']) && $organization[0]['isBroker'] == "true"){
-				return "BROKER:".strtoupper($string);
+				return "BROKER:".strtoupper($reference);
 			}
 		} else {
-			return "OTHER:".strtoupper($string);
+			return "OTHER:".strtoupper($reference);
 		}
   }
 
