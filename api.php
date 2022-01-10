@@ -210,7 +210,12 @@ class conversationsAPI extends CRUDAPI {
           $conversation['organizations'] = explode(";",$conversation['organizations']);
           foreach($conversation['contacts'] as $contact){
             if(!empty($contact) && $contact != '' && isset(explode("@",$contact)[1])){
-              $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setDomain` LIKE ?',explode("@",$contact)[1])->fetchAll()->all();
+              $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setDomain` = ? OR `setDomain` LIKE ? OR `setDomain` LIKE ? OR `setDomain` LIKE ?',
+								explode("@",$contact)[1],
+								"%;".explode("@",$contact)[1],
+								explode("@",$contact)[1].";%",
+								"%;".explode("@",$contact)[1].";%"
+							)->fetchAll()->all();
               if(!empty($organization)){
                 if(isset($organization[0]['id']) && !in_array($organization[0]['id'], $conversation['organizations'])){
 									array_push($conversation['organizations'],$organization[0]['id']);
@@ -263,7 +268,12 @@ class conversationsAPI extends CRUDAPI {
           foreach(explode(";",$message['bcc']) as $contact){if(!in_array($contact, $conversation['contacts'])){array_push($conversation['contacts'],$contact);}}
           foreach($conversation['contacts'] as $contact){
             if(!empty($contact) && $contact != '' && isset(explode("@",$contact)[1])){
-              $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setDomain` LIKE ?',explode("@",$contact)[1])->fetchAll()->all();
+							$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setDomain` = ? OR `setDomain` LIKE ? OR `setDomain` LIKE ? OR `setDomain` LIKE ?',
+								explode("@",$contact)[1],
+								"%;".explode("@",$contact)[1],
+								explode("@",$contact)[1].";%",
+								"%;".explode("@",$contact)[1].";%"
+							)->fetchAll()->all();
               if(!empty($organization)){
                 if(isset($organization[0]['id']) && !in_array($organization[0]['id'], $conversation['organizations'])){array_push($conversation['organizations'],$organization[0]['id']);}
               }
