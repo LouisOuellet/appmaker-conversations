@@ -301,7 +301,7 @@ class conversationsAPI extends CRUDAPI {
   protected function parseReference($string){
 		// Sanitize reference
 		$reference = $string;
-    $replace = ['CNTR-','PARS-','CCN:','VENDOR#','BILLING#','CROSSING#','LOCATION#','SBNR#','CCN#','PKG#','WEIGHT#','CLIENT#','CN:','CN#','TR#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','---','--','CID:','UTF-8','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','!','?','@','$','%','^','&','*','\\','/','|'];
+    $replace = ['CNTR-','PARS-','CCN:','VENDOR#','BILLING#','CROSSING#','LOCATION#','SBRN#','CCN#','PKG#','WEIGHT#','CLIENT#','CN:','CN#','TR#','OTHER:','PO:','PO#','MWB:','MWB#','STATUS#','REF:','NBR:','INV:','INV#','OTHER:','---','--','CID:','UTF-8','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','!','?','@','$','%','^','&','*','\\','/','|'];
     foreach($replace as $str1){ $reference = str_replace($str1,'',strtoupper($reference)); }
 		// Return based on string
 		if(substr($string, 0, 5) == "CNTR-" || substr($string, 0, 3) == "CN:" || substr($string, 0, 3) == "CN#"){
@@ -319,20 +319,20 @@ class conversationsAPI extends CRUDAPI {
 		if(substr($string, 0, 4) == "INV-" || substr($string, 0, 4) == "INV:" || substr($string, 0, 4) == "INV#"){
 			if($reference != ''){ return "INV:".strtoupper($reference); }
 		}
-		if(substr($string, 0, 4) == "VENDOR#"){
+		if(substr($string, 0, 7) == "VENDOR#"){
 			if($reference != ''){ return "VENDOR:".strtoupper($reference); }
 		}
-		if(substr($string, 0, 4) == "BILLING#"){
+		if(substr($string, 0, 8) == "BILLING#"){
 			if($reference != ''){ return "BILLING:".strtoupper($reference); }
 		}
-		if(substr($string, 0, 4) == "CROSSING#"){
+		if(substr($string, 0, 9) == "CROSSING#"){
 			if($reference != ''){ return "CROSSING:".strtoupper($reference); }
 		}
-		if(substr($string, 0, 4) == "LOCATION#"){
+		if(substr($string, 0, 9) == "LOCATION#"){
 			if($reference != ''){ return "LOCATION:".strtoupper($reference); }
 		}
-		if(substr($string, 0, 4) == "SBNR#"){
-			if($reference != ''){ return "SBNR:".strtoupper($reference); }
+		if(substr($string, 0, 5) == "SBRN#"){
+			if($reference != ''){ return "SBRN:".strtoupper($reference); }
 		}
 		if(substr($string, 0, 4) == "PKG#"){
 			if($reference != ''){ return "PKG:".strtoupper($reference); }
