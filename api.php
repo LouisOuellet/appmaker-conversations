@@ -344,17 +344,20 @@ class conversationsAPI extends CRUDAPI {
 			if($reference != ''){ return "WEIGHT:".strtoupper($reference); }
 		}
 		// Return based on reference
-		if(strlen(str_replace('-','',$reference))==14 && preg_match('/^[0-9]+$/', str_replace('-','',$reference))){
+		if(strlen(str_replace('-','',$reference)) == 14 && preg_match('/^[0-9]+$/', str_replace('-','',$reference))){
 			$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeHVS` LIKE ? OR `setCodeLVS` LIKE ?',(substr(str_replace('-','',$reference), 0, 5)),(substr(str_replace('-','',$reference), 0, 5)))->fetchAll()->all();
 			if(!empty($organization)){ return "TR:".strtoupper(str_replace('-','',$reference)); }
 		}
-		if(strlen($reference)>=10){
+		if(strlen($reference) >= 10){
 	    $organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeCCN` LIKE ?',substr($reference, 0, 4))->fetchAll()->all();
 	    if(!empty($organization) || strtoupper(substr($reference, 4, 4)) == "PARS"){ return "CCN:".strtoupper($reference); }
 		}
-    if(strlen($reference)>=10 && strlen($reference)<=11 && preg_match('/^[A-Z,a-z]+$/', substr($reference, 0, 4)) && preg_match('/^[0-9]+$/', substr($reference, 4))){
+    if(strlen($reference) >= 10 && strlen($reference) <= 11 && preg_match('/^[A-Z,a-z]+$/', substr($reference, 0, 4)) && preg_match('/^[0-9]+$/', substr($reference, 4))){
       return "CN:".strtoupper($reference);
     }
+		if(strlen($reference) == 15 && substr($reference, -6) == "RM0001"){
+			return "SBRN:".strtoupper($reference);
+		}
 		$organization = $this->Auth->query('SELECT * FROM `organizations` WHERE `setCodeITMR4` = ?',$reference)->fetchAll()->all();
 		if(!empty($organization)){
 			if(isset($organization[0]['isClient']) && $organization[0]['isClient'] == "true"){
