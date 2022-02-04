@@ -1,18 +1,18 @@
-API.Plugins.conversations = {
+Engine.Plugins.conversations = {
 	init:function(){
-		API.GUI.Sidebar.Nav.add('conversations', 'main_navigation');
+		Engine.GUI.Sidebar.Nav.add('conversations', 'main_navigation');
 	},
 	load:{
 		index:function(){
-			API.Builder.card($('#pagecontent'),{ title: 'conversations', icon: 'conversations'}, function(card){
-				API.request('conversations','read',{
+			Engine.Builder.card($('#pagecontent'),{ title: 'conversations', icon: 'conversations'}, function(card){
+				Engine.request('conversations','read',{
 					data:{options:{ link_to:'conversationsIndex',plugin:'conversations',view:'index' }},
 				},function(result) {
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
-						for(const [key, value] of Object.entries(dataset.output.dom)){ API.Helper.set(API.Contents,['data','dom','conversations',value.id],value); }
-						for(const [key, value] of Object.entries(dataset.output.raw)){ API.Helper.set(API.Contents,['data','raw','conversations',value.id],value); }
-						API.Builder.table(card.children('.card-body'), dataset.output.dom, {
+						for(const [key, value] of Object.entries(dataset.output.dom)){ Engine.Helper.set(Engine.Contents,['data','dom','conversations',value.id],value); }
+						for(const [key, value] of Object.entries(dataset.output.raw)){ Engine.Helper.set(Engine.Contents,['data','raw','conversations',value.id],value); }
+						Engine.Builder.table(card.children('.card-body'), dataset.output.dom, {
 							headers:['id','status','messages','files','organizations','contacts','meta'],
 							id:'conversationsIndex',
 							modal:true,
@@ -30,38 +30,38 @@ API.Plugins.conversations = {
 			var container = $('div[data-plugin="conversations"][data-id]').last();
 			var url = new URL(window.location.href);
 			var id = url.searchParams.get("id");
-			API.request(url.searchParams.get("p"),'get',{data:{id:id,key:'id'}},function(result){
+			Engine.request(url.searchParams.get("p"),'get',{data:{id:id,key:'id'}},function(result){
 				var dataset = JSON.parse(result);
 				if(dataset.success != undefined){
 					container.attr('data-id',dataset.output.this.raw.id);
 					// GUI
 					// Adding Layout
 					bgImage = '/plugins/conversations/dist/img/conversation.png';
-					API.GUI.Layouts.details.build(dataset.output,container,{title:"Conversation Details",image:bgImage},function(data,layout){
+					Engine.GUI.Layouts.details.build(dataset.output,container,{title:"Conversation Details",image:bgImage},function(data,layout){
 						if(layout.main.parents().eq(2).parent('.modal-body').length > 0){
 							var modal = layout.main.parents().eq(2).parent('.modal-body').parents().eq(2);
-							if(API.Auth.validate('plugin', 'conversations', 3)){
+							if(Engine.Auth.validate('plugin', 'conversations', 3)){
 								modal.find('.modal-header').find('.btn-group').find('[data-control="update"]').off().click(function(){
-									API.CRUD.update.show({ container:layout.main.parents().eq(2), keys:data.this.raw });
+									Engine.CRUD.update.show({ container:layout.main.parents().eq(2), keys:data.this.raw });
 								});
 							} else {
 								modal.find('.modal-header').find('.btn-group').find('[data-control="update"]').remove();
 							}
 						}
 						// History
-						API.GUI.Layouts.details.tab(data,layout,{icon:"fas fa-history",text:API.Contents.Language["History"]},function(data,layout,tab,content){
-							API.Helper.set(API.Contents,['layouts','conversations',data.this.raw.id,layout.main.attr('id')],layout);
+						Engine.GUI.Layouts.details.tab(data,layout,{icon:"fas fa-history",text:Engine.Contents.Language["History"]},function(data,layout,tab,content){
+							Engine.Helper.set(Engine.Contents,['layouts','conversations',data.this.raw.id,layout.main.attr('id')],layout);
 							content.addClass('p-3');
 							content.append('<div class="timeline" data-plugin="conversations"></div>');
 							layout.timeline = content.find('div.timeline');
 							var today = new Date();
-							API.Builder.Timeline.add.date(layout.timeline,today);
+							Engine.Builder.Timeline.add.date(layout.timeline,today);
 							layout.timeline.find('.time-label').first().html('<div class="btn-group"></div>');
-							layout.timeline.find('.time-label').first().find('div.btn-group').append('<button class="btn btn-primary" data-trigger="all">'+API.Contents.Language['All']+'</button>');
+							layout.timeline.find('.time-label').first().find('div.btn-group').append('<button class="btn btn-primary" data-trigger="all">'+Engine.Contents.Language['All']+'</button>');
 							var options = {plugin:"conversations"}
 							// Debug
-							if(API.debug){
-								API.GUI.Layouts.details.button(data,layout,{icon:"fas fa-stethoscope"},function(data,layout,button){
+							if(Engine.debug){
+								Engine.GUI.Layouts.details.button(data,layout,{icon:"fas fa-stethoscope"},function(data,layout,button){
 									button.off().click(function(){
 										console.log(data);
 										console.log(layout);
@@ -69,83 +69,83 @@ API.Plugins.conversations = {
 								});
 							}
 							// Clear
-							if(API.Auth.validate('custom', 'conversations_clear', 1)){
-								API.GUI.Layouts.details.control(data,layout,{color:"danger",icon:"fas fa-snowplow",text:API.Contents.Language["Clear"]},function(data,layout,button){
+							if(Engine.Auth.validate('custom', 'conversations_clear', 1)){
+								Engine.GUI.Layouts.details.control(data,layout,{color:"danger",icon:"fas fa-snowplow",text:Engine.Contents.Language["Clear"]},function(data,layout,button){
 									button.off().click(function(){
-										API.request('conversations','clear',{ data:data.this.raw },function(){
-											API.Plugins.conversations.load.details();
+										Engine.request('conversations','clear',{ data:data.this.raw },function(){
+											Engine.Plugins.conversations.load.details();
 										});
 									});
 								});
 							}
 							// Merge
-							if(API.Auth.validate('custom', 'conversations_merge', 1)){
-								API.GUI.Layouts.details.control(data,layout,{color:"primary",icon:"fas fa-mail-bulk",text:API.Contents.Language["Merge"]},function(data,layout,button){
+							if(Engine.Auth.validate('custom', 'conversations_merge', 1)){
+								Engine.GUI.Layouts.details.control(data,layout,{color:"primary",icon:"fas fa-mail-bulk",text:Engine.Contents.Language["Merge"]},function(data,layout,button){
 									button.off().click(function(){
-										API.Plugins.conversations.merge(data,layout);
+										Engine.Plugins.conversations.merge(data,layout);
 									});
 								});
 							}
 							// Close
-							if(API.Auth.validate('custom', 'conversations_close', 1)){
-								API.GUI.Layouts.details.control(data,layout,{color:"danger",icon:"fas fa-envelope",text:API.Contents.Language["Close"]},function(data,layout,button){
+							if(Engine.Auth.validate('custom', 'conversations_close', 1)){
+								Engine.GUI.Layouts.details.control(data,layout,{color:"danger",icon:"fas fa-envelope",text:Engine.Contents.Language["Close"]},function(data,layout,button){
 									button.off().click(function(){
-										API.Plugins.conversations.close(data,layout);
+										Engine.Plugins.conversations.close(data,layout);
 									});
 								});
 							}
 							// ID
-							API.GUI.Layouts.details.data(data,layout,{field:"id"});
+							Engine.GUI.Layouts.details.data(data,layout,{field:"id"});
 							// Status
-							if(API.Helper.isSet(API.Plugins,['statuses']) && API.Auth.validate('custom', 'conversations_statuses', 1)){
-								API.Plugins.statuses.Layouts.details.detail(data,layout);
+							if(Engine.Helper.isSet(Engine.Plugins,['statuses']) && Engine.Auth.validate('custom', 'conversations_statuses', 1)){
+								Engine.Plugins.statuses.Layouts.details.detail(data,layout);
 							}
 							// Organizations
-							if(API.Helper.isSet(API.Plugins,['organizations']) && API.Auth.validate('custom', 'conversations_organizations', 1)){
-								API.Plugins.organizations.Layouts.details.detail(data,layout);
+							if(Engine.Helper.isSet(Engine.Plugins,['organizations']) && Engine.Auth.validate('custom', 'conversations_organizations', 1)){
+								Engine.Plugins.organizations.Layouts.details.detail(data,layout);
 							}
 							// Tags
-							if(API.Helper.isSet(API.Plugins,['tags']) && API.Auth.validate('custom', 'conversations_tags', 1)){
-								API.Plugins.tags.Layouts.details.detail(data,layout);
+							if(Engine.Helper.isSet(Engine.Plugins,['tags']) && Engine.Auth.validate('custom', 'conversations_tags', 1)){
+								Engine.Plugins.tags.Layouts.details.detail(data,layout);
 							}
 							// Notes
-							if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
-								API.Plugins.notes.Layouts.details.tab(data,layout);
+							if(Engine.Helper.isSet(Engine.Plugins,['notes']) && Engine.Auth.validate('custom', 'conversations_notes', 1)){
+								Engine.Plugins.notes.Layouts.details.tab(data,layout);
 							}
 							// Contacts
-							if(API.Helper.isSet(API.Plugins,['contacts']) && API.Auth.validate('custom', 'conversations_contacts', 1)){
-								API.Plugins.contacts.Layouts.details.tab(data,layout);
+							if(Engine.Helper.isSet(Engine.Plugins,['contacts']) && Engine.Auth.validate('custom', 'conversations_contacts', 1)){
+								Engine.Plugins.contacts.Layouts.details.tab(data,layout);
 							}
 							// Files
-							if(API.Helper.isSet(API.Plugins,['files']) && API.Auth.validate('custom', 'conversations_files', 1)){
-								API.Plugins.files.Layouts.details.tab(data,layout);
+							if(Engine.Helper.isSet(Engine.Plugins,['files']) && Engine.Auth.validate('custom', 'conversations_files', 1)){
+								Engine.Plugins.files.Layouts.details.tab(data,layout);
 							}
 							// Created
 							options.field = "created";
 							options.td = '<td><time class="timeago" datetime="'+data.this.raw.created.replace(/ /g, "T")+'" title="'+data.this.raw.created+'">'+data.this.raw.created+'</time></td>';
-							API.GUI.Layouts.details.data(data,layout,options,function(data,layout,tr){ tr.find('time').timeago(); });
+							Engine.GUI.Layouts.details.data(data,layout,options,function(data,layout,tr){ tr.find('time').timeago(); });
 							// Subscription
 							var icon = "fas fa-bell";
-							if(API.Helper.isSet(data,['relations','users',API.Contents.Auth.User.id])){ var icon = "fas fa-bell-slash"; }
-							API.GUI.Layouts.details.button(data,layout,{icon:icon},function(data,layout,button){
+							if(Engine.Helper.isSet(data,['relations','users',Engine.Contents.Auth.User.id])){ var icon = "fas fa-bell-slash"; }
+							Engine.GUI.Layouts.details.button(data,layout,{icon:icon},function(data,layout,button){
 								button.off().click(function(){
 									if(button.find('i').hasClass( "fa-bell" )){
 										button.find('i').removeClass("fa-bell").addClass("fa-bell-slash");
-										API.request("conversations",'subscribe',{data:{id:data.this.raw.id}},function(answer){
+										Engine.request("conversations",'subscribe',{data:{id:data.this.raw.id}},function(answer){
 											var subscription = JSON.parse(answer);
 											if(subscription.success != undefined){
 												var sub = {};
-												for(var [key, value] of Object.entries(API.Contents.Auth.User)){ sub[key] = value; }
+												for(var [key, value] of Object.entries(Engine.Contents.Auth.User)){ sub[key] = value; }
 												sub.created = subscription.output.relationship.created;
 												sub.name = '';
 												if((sub.first_name != '')&&(sub.first_name != null)){ if(sub.name != ''){sub.name += ' ';} sub.name += sub.first_name; }
 												if((sub.middle_name != '')&&(sub.middle_name != null)){ if(sub.name != ''){sub.name += ' ';} sub.name += sub.middle_name; }
 												if((sub.last_name != '')&&(sub.last_name != null)){ if(sub.name != ''){sub.name += ' ';} sub.name += sub.last_name; }
-												API.Builder.Timeline.add.subscription(layout.timeline,sub,'bell','lightblue',function(item){
-													if((API.Auth.validate('plugin','users',1))&&(API.Auth.validate('view','details',1,'users'))){
+												Engine.Builder.Timeline.add.subscription(layout.timeline,sub,'bell','lightblue',function(item){
+													if((Engine.Auth.validate('plugin','users',1))&&(Engine.Auth.validate('view','details',1,'users'))){
 														item.find('i').first().addClass('pointer');
 														item.find('i').first().off().click(function(){
-															API.CRUD.read.show({ key:'username',keys:data.relations.users[item.attr('data-id')], href:"?p=users&v=details&id="+data.relations.users[item.attr('data-id')].username, modal:true });
+															Engine.CRUD.read.show({ key:'username',keys:data.relations.users[item.attr('data-id')], href:"?p=users&v=details&id="+data.relations.users[item.attr('data-id')].username, modal:true });
 														});
 													}
 												});
@@ -153,17 +153,17 @@ API.Plugins.conversations = {
 										});
 									} else {
 										button.find('i').removeClass("fa-bell-slash").addClass("fa-bell");
-										API.request(url.searchParams.get("p"),'unsubscribe',{data:{id:dataset.output.this.raw.id}},function(answer){
+										Engine.request(url.searchParams.get("p"),'unsubscribe',{data:{id:dataset.output.this.raw.id}},function(answer){
 											var subscription = JSON.parse(answer);
 											if(subscription.success != undefined){
-												layout.timeline.find('[data-type="bell"][data-id="'+API.Contents.Auth.User.id+'"]').remove();
+												layout.timeline.find('[data-type="bell"][data-id="'+Engine.Contents.Auth.User.id+'"]').remove();
 											}
 										});
 									}
 								});
 							});
 							// Timeline
-							API.Builder.Timeline.render(data,layout,{prefix:"conversations_"});
+							Engine.Builder.Timeline.render(data,layout,{prefix:"conversations_"});
 						});
 					});
 				}
@@ -171,7 +171,7 @@ API.Plugins.conversations = {
 		},
 	},
 	merge:function(data,layout){
-		API.Builder.modal($('body'), {
+		Engine.Builder.modal($('body'), {
 			title:'Type the conversation ID to be merged:',
 			icon:'merging',
 			zindex:'top',
@@ -184,35 +184,35 @@ API.Plugins.conversations = {
 			var footer = modal.find('.modal-footer');
 			header.find('button[data-control="hide"]').remove();
 			header.find('button[data-control="update"]').remove();
-			API.Builder.input(body, 'id', null,{plugin:'conversations',type:'input'}, function(input){});
-			// body.html(API.Contents.Language['Are you sure you want to close this conversation?']);
-			footer.append('<button class="btn btn-primary" data-action="merge"><i class="fas fa-mail-bulk mr-1"></i>'+API.Contents.Language['Merge']+'</button>');
+			Engine.Builder.input(body, 'id', null,{plugin:'conversations',type:'input'}, function(input){});
+			// body.html(Engine.Contents.Language['Are you sure you want to close this conversation?']);
+			footer.append('<button class="btn btn-primary" data-action="merge"><i class="fas fa-mail-bulk mr-1"></i>'+Engine.Contents.Language['Merge']+'</button>');
 			footer.find('button[data-action="merge"]').off().click(function(){
-				API.request('conversations','merge',{data:{id:data.this.raw.id,conversation:body.find('input').val()}},function(result){
+				Engine.request('conversations','merge',{data:{id:data.this.raw.id,conversation:body.find('input').val()}},function(result){
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
 						// Organizations
-						if(API.Helper.isSet(API.Plugins,['organizations']) && API.Auth.validate('custom', 'conversations_organizations', 1)){
-							API.Plugins.organizations.Layouts.details.detail(dataset.output.get.output,layout);
+						if(Engine.Helper.isSet(Engine.Plugins,['organizations']) && Engine.Auth.validate('custom', 'conversations_organizations', 1)){
+							Engine.Plugins.organizations.Layouts.details.detail(dataset.output.get.output,layout);
 						}
 						// Tags
-						if(API.Helper.isSet(API.Plugins,['tags']) && API.Auth.validate('custom', 'conversations_tags', 1)){
-							API.Plugins.tags.Layouts.details.detail(dataset.output.get.output,layout);
+						if(Engine.Helper.isSet(Engine.Plugins,['tags']) && Engine.Auth.validate('custom', 'conversations_tags', 1)){
+							Engine.Plugins.tags.Layouts.details.detail(dataset.output.get.output,layout);
 						}
 						// Notes
-						if(API.Helper.isSet(API.Plugins,['notes']) && API.Auth.validate('custom', 'conversations_notes', 1)){
-							API.Plugins.notes.Layouts.details.tab(dataset.output.get.output,layout);
+						if(Engine.Helper.isSet(Engine.Plugins,['notes']) && Engine.Auth.validate('custom', 'conversations_notes', 1)){
+							Engine.Plugins.notes.Layouts.details.tab(dataset.output.get.output,layout);
 						}
 						// Contacts
-						if(API.Helper.isSet(API.Plugins,['contacts']) && API.Auth.validate('custom', 'conversations_contacts', 1)){
-							API.Plugins.contacts.Layouts.details.tab(dataset.output.get.output,layout);
+						if(Engine.Helper.isSet(Engine.Plugins,['contacts']) && Engine.Auth.validate('custom', 'conversations_contacts', 1)){
+							Engine.Plugins.contacts.Layouts.details.tab(dataset.output.get.output,layout);
 						}
 						// Files
-						if(API.Helper.isSet(API.Plugins,['files']) && API.Auth.validate('custom', 'conversations_files', 1)){
-							API.Plugins.files.Layouts.details.tab(dataset.output.get.output,layout);
+						if(Engine.Helper.isSet(Engine.Plugins,['files']) && Engine.Auth.validate('custom', 'conversations_files', 1)){
+							Engine.Plugins.files.Layouts.details.tab(dataset.output.get.output,layout);
 						}
 						// Timeline
-						API.Builder.Timeline.render(dataset.output.get.output,layout,{prefix:"conversations_"});
+						Engine.Builder.Timeline.render(dataset.output.get.output,layout,{prefix:"conversations_"});
 					}
 				});
 				modal.modal('hide');
@@ -221,7 +221,7 @@ API.Plugins.conversations = {
 		});
 	},
 	close:function(data,layout){
-		API.Builder.modal($('body'), {
+		Engine.Builder.modal($('body'), {
 			title:'Are you sure?',
 			icon:'close',
 			zindex:'top',
@@ -234,15 +234,15 @@ API.Plugins.conversations = {
 			var footer = modal.find('.modal-footer');
 			header.find('button[data-control="hide"]').remove();
 			header.find('button[data-control="update"]').remove();
-			body.html(API.Contents.Language['Are you sure you want to close this conversation?']);
-			footer.append('<button class="btn btn-danger" data-action="close"><i class="fas fa-envelope mr-1"></i>'+API.Contents.Language['Close']+'</button>');
+			body.html(Engine.Contents.Language['Are you sure you want to close this conversation?']);
+			footer.append('<button class="btn btn-danger" data-action="close"><i class="fas fa-envelope mr-1"></i>'+Engine.Contents.Language['Close']+'</button>');
 			footer.find('button[data-action="close"]').off().click(function(){
-				API.request('conversations','close',{data:{id:data.this.raw.id}},function(result){
+				Engine.request('conversations','close',{data:{id:data.this.raw.id}},function(result){
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
 						data.this.raw.status = 3;
 						data.this.dom.status = 3;
-						API.Plugins.statuses.update(data,layout);
+						Engine.Plugins.statuses.update(data,layout);
 					}
 				});
 				modal.modal('hide');
@@ -254,16 +254,16 @@ API.Plugins.conversations = {
 		icon:"comments",
 		object:function(dataset,layout,options = {},callback = null){
 			if(options instanceof Function){ callback = options; options = {}; }
-			var defaults = {icon: API.Plugins.conversations.Timeline.icon,color: "info"};
-			for(var [key, option] of Object.entries(options)){ if(API.Helper.isSet(defaults,[key])){ defaults[key] = option; } }
+			var defaults = {icon: Engine.Plugins.conversations.Timeline.icon,color: "info"};
+			for(var [key, option] of Object.entries(options)){ if(Engine.Helper.isSet(defaults,[key])){ defaults[key] = option; } }
 			if(typeof dataset.id !== 'undefined'){
 				var dateItem = new Date(dataset.created);
 				var dateUS = dateItem.toLocaleDateString('en-US', {day: 'numeric', month: 'short', year: 'numeric'}).replace(/ /g, '-').replace(/,/g, '');
-				API.Builder.Timeline.add.date(layout.timeline,dataset.created);
+				Engine.Builder.Timeline.add.date(layout.timeline,dataset.created);
 				var checkExist = setInterval(function() {
 					if(layout.timeline.find('div.time-label[data-dateus="'+dateUS+'"]').length > 0){
 						clearInterval(checkExist);
-						API.Builder.Timeline.add.filter(layout,'conversations','Conversations');
+						Engine.Builder.Timeline.add.filter(layout,'conversations','Conversations');
 						var html = '';
 						html += '<div data-plugin="conversations" data-id="'+dataset.id+'" data-account="'+dataset.account+'" data-date="'+dateItem.getTime()+'">';
 							html += '<i class="fas fa-'+defaults.icon+' bg-'+defaults.color+'"></i>';
@@ -282,7 +282,7 @@ API.Plugins.conversations = {
 						layout.timeline.append(items);
 						element.find('i').first().addClass('pointer');
 						element.find('i').first().off().click(function(){
-							API.CRUD.read.show({ key:'id',keys:dataset, href:"?p=conversations&v=details&id="+dataset.id, modal:true });
+							Engine.CRUD.read.show({ key:'id',keys:dataset, href:"?p=conversations&v=details&id="+dataset.id, modal:true });
 						});
 						if(callback != null){ callback(element); }
 					}
@@ -292,4 +292,4 @@ API.Plugins.conversations = {
 	},
 }
 
-API.Plugins.conversations.init();
+Engine.Plugins.conversations.init();
