@@ -1,3 +1,49 @@
 {
-    "conversations": []
+    "conversations": [
+        {
+            "id": 100000,
+            "created": "2022-02-07 12:45:08",
+            "modified": "2022-02-07 12:45:13",
+            "owner": "1",
+            "updated_by": "1",
+            "account": "customs@albcie.com",
+            "status": 1,
+            "messages": "202202071730.217HUXMK096222@itmapp09.prd.dsg-internal;2022020413415047512013@USPRIMEAGENCY.COM;2022020413425719325814@USPRIMEAGENCY.COM",
+            "files": "100000;100001;100002;100003;100004",
+            "organizations": "1",
+            "contacts": "pars@albcustoms.com;reject@albcie.com;kiki@usprimeagency.com;scaouette@neptuneb.com;dispatch@albcustoms.com",
+            "meta": "[\n    \"TR:10013000791194\",\n    \"OTHER:8112SSGNA0213309\",\n    \"CROSSING:0702\",\n    \"LOCATION:4492\",\n    \"CN:TCLU5628960\",\n    \"INV:2021-01\",\n    \"PKG:70\",\n    \"WEIGHT:5,834.00KGM\",\n    \"VENDOR:DUCTAM-VN\",\n    \"CLIENT:NERVAL1111\",\n    \"SBRN:129004511RM0001\",\n    \"OTHER:NOTICE-PRIMASR1205321\",\n    \"CN:CNCMAU7105610\",\n    \"OTHER:NOTICE-PRIMASR1201521\",\n    \"CN:CNECMU8176101\",\n    \"CN:DRYU4536524\",\n    \"CN:DRYU4543190\"\n]",
+            "hasNew": ""
+        },
+        {
+            "id": 100001,
+            "created": "2022-02-07 12:45:08",
+            "modified": "2022-02-07 12:45:08",
+            "owner": "1",
+            "updated_by": "1",
+            "account": "customs@albcie.com",
+            "status": 1,
+            "messages": "em27453bf6-2a81-453d-a29d-ed3606743ece@session-24",
+            "files": "100007",
+            "organizations": "1",
+            "contacts": "greg@alblogistique.com;dispatch@albcustoms.com",
+            "meta": "[\n    \"CCN:77-EPARS002033\"\n]",
+            "hasNew": "true"
+        },
+        {
+            "id": 100002,
+            "created": "2022-02-07 12:45:08",
+            "modified": "2022-02-07 12:45:08",
+            "owner": "1",
+            "updated_by": "1",
+            "account": "customs@albcie.com",
+            "status": 1,
+            "messages": "fa6d66d2046a4b6bbb45ec87ddcbb834@Kuehne-Nagel.com",
+            "files": "100005;100006;100007",
+            "organizations": "1",
+            "contacts": "minh-tien.nguyen@kuehne-nagel.com;pars@albcustoms.com;intermodal@lafrance.qc.ca",
+            "meta": "[\n    \"OTHER:TN1042773880\",\n    \"CN:CAIU4241939\",\n    \"PO:45A139990\"\n]",
+            "hasNew": "true"
+        }
+    ]
 }

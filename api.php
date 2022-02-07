@@ -168,12 +168,14 @@ class conversationsAPI extends CRUDAPI {
           } else {
 						if($message['reference_id'] != null && $message['reference_id'] != ''){
 	            foreach(explode(";",$message['reference_id']) as $mid){
-	              $conversation = $this->Auth->query('SELECT * FROM `conversations` WHERE `account` = ? AND `messages` LIKE ?',$message['account'],'%'.$mid.'%')->fetchAll()->all();
-	              if(!empty($conversation)){
-									if(isset($this->Settings['debug']) && $this->Settings['debug']){ echo "[".count($conversation)."]Match by mail reference: ".$mid."\n"; }
-	                $found = true;
-	                break;
-	              }
+								if($mid != ''){
+		              $conversation = $this->Auth->query('SELECT * FROM `conversations` WHERE `account` = ? AND `messages` LIKE ?',$message['account'],'%'.$mid.'%')->fetchAll()->all();
+		              if(!empty($conversation)){
+										if(isset($this->Settings['debug']) && $this->Settings['debug']){ echo "[".count($conversation)."]Match by mail reference: ".$mid."\n"; }
+		                $found = true;
+		                break;
+		              }
+								}
 	            }
 						}
 						if($message['meta'] != null && $message['meta'] != ''){
